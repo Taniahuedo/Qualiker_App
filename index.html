@@ -65,6 +65,10 @@
     <div><label>Mes</label><input type="text" id="mes"></div>
     <div><label>Quién rellena</label><input type="text" id="persona" placeholder="Nombre"></div>
   </div>
+  </div>
+  <p class="nota" id="zonaCarpeta" hidden>Guardado en OneDrive: <span id="estadoCarpeta">sin conectar</span>
+    <button class="btn mini sec" id="btnCarpeta" type="button">Conectar carpeta del grupo (OneDrive)</button>
+    <span id="msgCarpeta" class="exito"></span></p>
 </div>
 
 <div class="card">
@@ -94,9 +98,6 @@
   <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que la IA no encontró en tus notas: complétalo o déjalo para el mes que viene. Puedes editar cualquier texto aquí mismo.</p>
   <div id="editSecciones"></div>
   <div id="listaRegs"></div>
-  <p class="nota" id="zonaCarpeta" hidden>Guardado directo: <span id="estadoCarpeta">sin conectar</span>
-    <button class="btn mini sec" id="btnCarpeta" type="button">Conectar carpeta del grupo (OneDrive)</button>
-    <span id="msgCarpeta" class="exito"></span></p>
   <button class="btn" id="btnPlantilla">Ver plantilla de reunión</button>
   <button class="btn" id="btnCopiarPlantilla">Copiar plantilla</button>
   <button class="btn" id="btnJSON">Descargar JSON (a OneDrive)</button>
