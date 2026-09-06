@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QUALIKER · Actualización mensual e indicadores</title>
+<style>
+  :root{ --azul:#1F4E5F; --azul2:#2E6E85; --claro:#EEF4F6; --borde:#D5DEE2; --texto:#1c2b33; --gris:#5c6f78; --ok:#2e7d32; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Segoe UI", system-ui, -apple-system, sans-serif; color:var(--texto); background:#f7f9fa; line-height:1.45;}
+  header{background:var(--azul); color:#fff; padding:16px 24px;}
+  header h1{font-size:1.2rem; font-weight:600;}
+  header p{font-size:.85rem; opacity:.85; margin-top:2px;}
+  main{max-width:900px; margin:0 auto; padding:20px 24px 60px;}
+  .card{background:#fff; border:1px solid var(--borde); border-radius:10px; padding:16px 18px; margin-bottom:14px;}
+  .paso{display:flex; gap:12px; align-items:baseline; margin-bottom:8px;}
+  .num{background:var(--azul); color:#fff; border-radius:50%; min-width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; align-self:center;}
+  .card h2{font-size:1.05rem; color:var(--azul);}
+  label{display:block; font-size:.8rem; color:var(--gris); margin:6px 0 3px;}
+  input[type=text], select, textarea{ width:100%; padding:8px 10px; border:1px solid var(--borde); border-radius:6px; font-size:.92rem; font-family:inherit; background:#fff;}
+  textarea{min-height:110px; resize:vertical;}
+  .fila{display:flex; gap:10px; flex-wrap:wrap;}
+  .fila > div{flex:1; min-width:150px;}
+  .btn{display:inline-block; background:var(--azul); color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:.95rem; cursor:pointer; margin:8px 8px 0 0;}
+  .btn.grande{font-size:1.02rem; padding:12px 22px;}
+  .btn.sec{background:#fff; color:var(--azul); border:1px solid var(--azul);}
+  .btn.mini{padding:4px 10px; font-size:.8rem; margin:4px 4px 0 0;}
+  .btn.rojo{background:#fff; color:#a33; border:1px solid #c88;}
+  .nota{font-size:.83rem; color:var(--gris); margin-top:5px;}
+  .exito{color:var(--ok); font-size:.88rem; margin-left:8px;}
+  .error{color:#a33; font-size:.88rem; margin-left:8px;}
+  .verificar{background:#FFF3CD; padding:1px 4px; border-radius:3px;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:8px;}
+  th{background:var(--azul); color:#fff; text-align:left; padding:6px 8px; font-weight:600;}
+  td{border-bottom:1px solid var(--borde); padding:6px 8px; vertical-align:top;}
+  .pill{display:inline-block; background:var(--claro); color:var(--azul); border-radius:12px; padding:2px 10px; font-size:.78rem; margin:2px 4px 2px 0;}
+  .grabando{background:#c62828 !important; color:#fff !important;}
+  pre.salida{background:#f1f5f7; border:1px solid var(--borde); border-radius:8px; padding:12px; font-size:.82rem; white-space:pre-wrap; max-height:300px; overflow:auto; margin-top:10px;}
+  details{margin-top:10px;}
+  summary{cursor:pointer; color:var(--azul); font-size:.9rem;}
+  #revision{display:none;}
+  #revision.visible{display:block;}
+  .secedit{margin-bottom:8px;}
+  .secedit textarea{min-height:52px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>QUALIKER (IT1922-26) · Actualización mensual e indicadores</h1>
+  <p>Pega lo que tengas, la IA lo ordena, tú solo revisas. Los datos no se guardan solos: exporta antes de cerrar.</p>
+</header>
+<main>
+
+<div class="card">
+  <div class="fila">
+    <div><label>Línea</label>
+      <select id="linea">
+        <option value="Línea 1">Línea 1 · Adolescencia y juventud</option>
+        <option value="Línea 2">Línea 2 · Cáncer (pacientes y familiares)</option>
+        <option value="Línea 3">Línea 3 · Conducta suicida y posvención</option>
+        <option value="Línea 4">Línea 4 · Envejecimiento activo</option>
+        <option value="Línea 5">Línea 5 · Metodológica</option>
+      </select>
+    </div>
+    <div><label>Mes</label><input type="text" id="mes"></div>
+    <div><label>Quién rellena</label><input type="text" id="persona" placeholder="Nombre"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="paso"><span class="num">1</span><h2>Pega aquí todo lo que tengas, tal cual</h2></div>
+  <p class="nota">Vale cualquier cosa y en cualquier orden: un correo, la referencia de un paper copiada de la revista, un trozo de tu CV, notas de una reunión, un audio dictado. Pega varias cosas seguidas sin ordenarlas. No rellenes nada a mano que ya exista escrito en otro sitio.</p>
+  <textarea id="volcado" placeholder="Ej.: pega aquí el correo de aceptación del paper + la referencia + tus notas del mes..."></textarea>
+  <button class="btn sec" id="btnDictar">🎙 Dictar</button>
+  <span id="msgDictado" class="nota"></span>
+</div>
+
+<div class="card">
+  <div class="paso"><span class="num">2</span><h2>Copia el paquete y pégalo en tu IA</h2></div>
+  <p class="nota">El botón copia tus notas junto con las instrucciones. Pégalo en Claude (o el chatbot que uses) y copia su respuesta completa.</p>
+  <button class="btn grande" id="btnCopiarPrompt">Copiar paquete para la IA</button>
+  <span id="msgPrompt" class="exito"></span>
+</div>
+
+<div class="card">
+  <div class="paso"><span class="num">3</span><h2>Pega aquí la respuesta de la IA</h2></div>
+  <textarea id="respuesta" placeholder="Pega la respuesta completa del chatbot (con el bloque JSON) y listo."></textarea>
+  <button class="btn grande" id="btnProcesar">Procesar respuesta</button>
+  <span id="msgProc" class="exito"></span><span id="errProc" class="error"></span>
+</div>
+
+<div class="card" id="revision">
+  <div class="paso"><span class="num">✓</span><h2>Revisa 30 segundos y exporta</h2></div>
+  <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que la IA no encontró en tus notas: complétalo o déjalo para el mes que viene. Puedes editar cualquier texto aquí mismo.</p>
+  <div id="editSecciones"></div>
+  <div id="listaRegs"></div>
+  <p class="nota" id="zonaCarpeta" hidden>Guardado directo: <span id="estadoCarpeta">sin conectar</span>
+    <button class="btn mini sec" id="btnCarpeta" type="button">Conectar carpeta del grupo (OneDrive)</button>
+    <span id="msgCarpeta" class="exito"></span></p>
+  <button class="btn" id="btnPlantilla">Ver plantilla de reunión</button>
+  <button class="btn" id="btnCopiarPlantilla">Copiar plantilla</button>
+  <button class="btn" id="btnJSON">Descargar JSON (a OneDrive)</button>
+  <button class="btn" id="btnCSV">Descargar CSV de indicadores</button>
+  <pre class="salida" id="salida" style="display:none"></pre>
+</div>
+
+<div class="card">
+  <details>
+    <summary>Opciones: continuar una sesión anterior, añadir un registro a mano, ayuda</summary>
+    <label style="margin-top:10px">Cargar un JSON guardado (continúa donde lo dejaste)</label>
+    <input type="file" id="importJSON" accept=".json">
+    <span id="msgImport" class="exito"></span>
+    <label style="margin-top:14px">Consolidar varios JSON en un CSV único (para la gestión de indicadores)</label>
+    <input type="file" id="consolidar" accept=".json" multiple>
+    <span id="msgCons" class="exito"></span>
+    <div id="manualZona">
+      <label style="margin-top:14px">Añadir un registro a mano (solo si no tienes nada que pegar)</label>
+      <div class="fila">
+        <div>
+          <select id="tipoReg">
+            <option value="publicacion">Publicación</option>
+            <option value="financiacion">Financiación</option>
+            <option value="tesis">Tesis</option>
+            <option value="contrato_personal">Contrato pre/posdoctoral</option>
+            <option value="congreso">Congreso</option>
+            <option value="difusion">Difusión</option>
+          </select>
+        </div>
+      </div>
+      <div id="formReg"></div>
+      <button class="btn mini" id="btnAddReg">Añadir</button>
+      <span id="msgReg" class="exito"></span>
+    </div>
+    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa y exporta. El JSON se guarda en la carpeta compartida de OneDrive (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json); el CSV alimenta el informe anual. Con "Conectar carpeta del grupo" el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos (OneDrive los sube al grupo). Nada sale de tu navegador. La persona responsable de indicadores puede seleccionar varios JSON a la vez en "Consolidar" y obtener un único CSV con todos los registros del grupo.</p>
+  </details>
+</div>
+</main>
+
+<script>
+"use strict";
+const estado = { actualizacion: { avances: "", proximo: "", bloqueos: "", peticiones: "", ofertas: "" }, registros: [] };
+
+/* mes prellenado */
+(function(){
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const d = new Date();
+  document.getElementById("mes").value = meses[d.getMonth()] + " " + d.getFullYear();
+})();
+
+const CAMPOS = {
+  publicacion: [["autores","Autores/as (orden de firma)"],["titulo","Título"],["tipo_pub","Tipo (artículo indexado / libro / capítulo / otras)"],["base","Base de datos"],["cuartil","Cuartil"],["anio","Año"],["referencia","Referencia completa"],["revista","Revista/editorial"],["issn","ISSN/ISBN"],["doi","DOI"],["coautoria","Coautoría entre miembros (Sí/No)"],["miembros","Miembros que firman"],["acreditacion","PDF de acreditación"]],
+  financiacion: [["tipo_fin","Tipo (competitiva/contrato/convenio/otros)"],["titulo","Título"],["entidad","Entidad"],["convocatoria","Convocatoria"],["ip","IP/responsable"],["importe","Importe (€)"],["estado","Estado"],["inicio","Inicio"],["fin","Fin"]],
+  tesis: [["doctorando","Doctorando/a"],["titulo","Título"],["direccion","Dirección"],["estado","Estado (en curso/defendida)"],["internacional","Mención internacional (Sí/No)"],["anio","Año defensa"]],
+  contrato_personal: [["persona","Persona"],["tipo_con","Tipo (pre/posdoctoral)"],["fuente","Fuente de financiación"],["inicio","Inicio"],["fin","Fin"]],
+  congreso: [["autores","Autores/as"],["titulo","Título"],["congreso","Congreso"],["tipo_c","Tipo"],["fecha","Fecha"],["lugar","Lugar"]],
+  difusion: [["actividad","Actividad"],["publico","Público"],["fecha","Fecha"],["alcance","Alcance medido"]]
+};
+const ETIQ = {publicacion:"Publicación", financiacion:"Financiación", tesis:"Tesis", contrato_personal:"Contrato personal", congreso:"Congreso", difusion:"Difusión"};
+const SECS = [["avances","1 · Avances del mes"],["proximo","2 · Próximo mes"],["bloqueos","3 · Bloqueos"],["peticiones","4 · Peticiones al grupo"],["ofertas","5 · Ofertas al grupo"]];
+
+function val(id){ return (document.getElementById(id) || {}).value || ""; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+/* ---------- dictado ---------- */
+let rec = null, grabando = false;
+const ERRMIC = {
+  "not-allowed": "Micrófono bloqueado: pulsa el candado junto a la dirección y permite el micrófono.",
+  "service-not-allowed": "El navegador no permite el servicio de dictado aquí. Prueba en Chrome o Edge, abriendo la app por su enlace web.",
+  "audio-capture": "No se detecta micrófono. Conecta uno o revisa el sonido del equipo.",
+  "network": "El dictado necesita conexión a internet.",
+  "aborted": "", "no-speech": ""
+};
+function pararDictado(){
+  grabando = false;
+  const btn = document.getElementById("btnDictar");
+  btn.classList.remove("grabando"); btn.textContent = "🎙 Dictar";
+}
+document.getElementById("btnDictar").addEventListener("click", () => {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const msg = document.getElementById("msgDictado");
+  if (!SR) { msg.textContent = "El dictado necesita Chrome o Edge (abre la app por su enlace web)."; return; }
+  if (grabando) { grabando = false; try { rec.stop(); } catch (e) {} pararDictado(); msg.textContent = ""; return; }
+  rec = new SR(); rec.lang = "es-ES"; rec.continuous = true; rec.interimResults = false;
+  const area = document.getElementById("volcado");
+  rec.onresult = e => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) area.value += (area.value ? " " : "") + e.results[i][0].transcript.trim(); };
+  rec.onend = () => {
+    /* Chrome corta solo tras unos segundos de silencio: si no has pulsado Parar, retomamos */
+    if (grabando) { try { rec.start(); return; } catch (e) {} }
+    pararDictado(); if (!msg.textContent.startsWith("Micrófono") ) msg.textContent = "";
+  };
+  rec.onerror = ev => {
+    const t = ERRMIC[ev.error];
+    if (t === undefined) { msg.textContent = "Error de micrófono: " + ev.error; }
+    else if (t) { msg.textContent = t; grabando = false; pararDictado(); }
+  };
+  try { rec.start(); } catch (e) { msg.textContent = "No se pudo iniciar el dictado: " + e.message; return; }
+  grabando = true;
+  const btn = document.getElementById("btnDictar"); btn.classList.add("grabando"); btn.textContent = "■ Parar";
+  msg.textContent = "Grabando… habla con normalidad. Se guarda cuando haces pausas.";
+});
+
+/* ---------- prompt ---------- */
+function promptAgente(){
+  return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas copiadas de revistas o de un CV, notas sueltas o transcripciones de audio.
+
+Tu tarea, sin inventar absolutamente nada:
+1. Ordena el contenido en cinco apartados: avances, proximo, bloqueos, peticiones (lo que la línea necesita de otras), ofertas (lo que puede ofrecer). Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
+2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
+3. Todo dato que NO esté en el volcado se rellena exactamente con "[VERIFICAR]". Nunca lo completes por conocimiento propio.
+4. Responde SOLO con un bloque JSON válido, sin texto antes ni después:
+{"linea":"${val("linea")}","mes":"${val("mes")}","persona":"${val("persona")}","actualizacion":{"avances":"","proximo":"","bloqueos":"","peticiones":"","ofertas":""},"registros":[{"tipo":"publicacion","autores":"...","titulo":"..."}]}
+
+VOLCADO:
+`;
+}
+document.getElementById("btnCopiarPrompt").addEventListener("click", () => {
+  const texto = promptAgente() + (val("volcado") || "[no hay volcado: pega antes tus notas en el paso 1]");
+  navigator.clipboard.writeText(texto).then(() => {
+    document.getElementById("msgPrompt").textContent = "Copiado. Pégalo en tu chatbot y trae su respuesta.";
+    setTimeout(() => document.getElementById("msgPrompt").textContent = "", 4000);
+  });
+});
+
+/* ---------- procesar respuesta IA ---------- */
+function extraerJSON(texto){
+  let t = texto.replace(/```json/gi, "```").split("```").find(x => x.trim().startsWith("{")) || texto;
+  const ini = t.indexOf("{"), fin = t.lastIndexOf("}");
+  if (ini < 0 || fin <= ini) throw new Error("no-json");
+  return JSON.parse(t.slice(ini, fin + 1));
+}
+document.getElementById("btnProcesar").addEventListener("click", () => {
+  const ok = document.getElementById("msgProc"), err = document.getElementById("errProc");
+  ok.textContent = ""; err.textContent = "";
+  try {
+    const d = extraerJSON(val("respuesta"));
+    cargarDatos(d);
+    ok.textContent = "Listo: revisa abajo y exporta.";
+    document.getElementById("revision").classList.add("visible");
+    document.getElementById("revision").scrollIntoView({ behavior: "smooth" });
+  } catch (e) {
+    err.textContent = "No encuentro un bloque JSON válido en lo pegado. Pega la respuesta completa del chatbot.";
+  }
+});
+function cargarDatos(d){
+  if (d.linea) { const s = document.getElementById("linea"); [...s.options].forEach(o => { if (o.value === d.linea || o.textContent.startsWith(d.linea)) s.value = o.value; }); }
+  if (d.mes) document.getElementById("mes").value = d.mes;
+  if (d.persona) document.getElementById("persona").value = d.persona;
+  if (d.actualizacion) SECS.forEach(([k]) => { estado.actualizacion[k] = d.actualizacion[k] || ""; });
+  estado.registros = Array.isArray(d.registros) ? d.registros.filter(x => x && x.tipo && CAMPOS[x.tipo]) : [];
+  pintarRevision();
+}
+function marcarVerificar(s){ return escapeHtml(s).replace(/\[VERIFICAR\]/g, '<span class="verificar">[VERIFICAR]</span>'); }
+function pintarRevision(){
+  const cont = document.getElementById("editSecciones");
+  cont.innerHTML = "";
+  SECS.forEach(([k, titulo]) => {
+    const div = document.createElement("div"); div.className = "secedit";
+    const l = document.createElement("label"); l.textContent = titulo; div.appendChild(l);
+    const ta = document.createElement("textarea"); ta.value = estado.actualizacion[k]; ta.id = "sec_" + k;
+    ta.addEventListener("input", () => estado.actualizacion[k] = ta.value);
+    div.appendChild(ta); cont.appendChild(div);
+  });
+  const lr = document.getElementById("listaRegs");
+  if (!estado.registros.length) { lr.innerHTML = '<p class="nota">Sin indicadores nuevos este mes.</p>'; return; }
+  let html = "<table><tr><th>#</th><th>Tipo</th><th>Resumen</th><th></th></tr>";
+  estado.registros.forEach((g, i) => {
+    const res = [g.titulo, g.actividad, g.persona, g.doctorando].find(Boolean) || "(sin título)";
+    const extra = (g.coautoria || "").toLowerCase().startsWith("s") ? ' <span class="pill">coautoría interna</span>' : "";
+    const pend = Object.values(g).some(v => String(v).includes("[VERIFICAR]")) ? ' <span class="verificar">[VERIFICAR]</span>' : "";
+    html += `<tr><td>${i+1}</td><td>${ETIQ[g.tipo]}</td><td>${marcarVerificar(res)}${extra}${pend}</td><td><button class="btn mini rojo" onclick="borrarReg(${i})">Quitar</button></td></tr>`;
+  });
+  lr.innerHTML = html + "</table>";
+}
+window.borrarReg = i => { estado.registros.splice(i, 1); pintarRevision(); };
+
+/* ---------- salida ---------- */
+function plantillaTexto(){
+  const secc = (t, v) => t + "\n" + ((v || "").trim() ? v.trim().split(/\n+/).map(x => "  – " + x.trim()).join("\n") : "  – (nada este mes)") + "\n\n";
+  let t = `ACTUALIZACIÓN MENSUAL · ${val("linea")} · ${val("mes")}\nRellena: ${val("persona")}\n${"".padEnd(60, "=")}\n\n`;
+  SECS.forEach(([k, titulo]) => { t += secc(titulo.toUpperCase(), estado.actualizacion[k]); });
+  if (estado.registros.length) {
+    t += "6 · INDICADORES NUEVOS ESTE MES\n";
+    estado.registros.forEach((g, i) => {
+      const campos = CAMPOS[g.tipo].map(([id, lab]) => g[id] ? `${lab}: ${g[id]}` : null).filter(Boolean).join(" | ");
+      t += `  ${i+1}. [${ETIQ[g.tipo]}] ${campos}\n`;
+    });
+  }
+  return t;
+}
+/* ---------- carpeta del grupo (guardado directo en OneDrive sincronizado) ---------- */
+let esVentanaPrincipal = true; try { esVentanaPrincipal = (window.self === window.top); } catch (e) { esVentanaPrincipal = false; }
+let carpeta = null;
+function idb(modo, fn){
+  const req = indexedDB.open("qualiker", 1);
+  req.onupgradeneeded = () => req.result.createObjectStore("kv");
+  req.onsuccess = () => { const tx = req.result.transaction("kv", modo); fn(tx.objectStore("kv")); };
+}
+function guardaHandle(h){ try { idb("readwrite", st => st.put(h, "carpeta")); } catch (e) {} }
+function estadoCarpeta(txt){ const el = document.getElementById("estadoCarpeta"); if (el) el.textContent = txt; }
+async function conectarCarpeta(){
+  const msg = document.getElementById("msgCarpeta");
+  try {
+    carpeta = await window.showDirectoryPicker({ mode: "readwrite" });
+    guardaHandle(carpeta);
+    estadoCarpeta("conectada: " + carpeta.name);
+    msg.textContent = "Los archivos se guardarán ahí directamente.";
+    setTimeout(() => msg.textContent = "", 4000);
+  } catch (e) { /* cancelado */ }
+}
+if (document.getElementById("btnCarpeta")) {
+  if (("showDirectoryPicker" in window) && esVentanaPrincipal) {
+    document.getElementById("zonaCarpeta").hidden = false;
+    document.getElementById("btnCarpeta").addEventListener("click", async () => {
+      /* si hay handle guardado con permiso pendiente, un clic lo reactiva sin volver a elegir */
+      if (carpeta) {
+        try {
+          if (await carpeta.requestPermission({ mode: "readwrite" }) === "granted") {
+            estadoCarpeta("conectada: " + carpeta.name); return;
+          }
+        } catch (e) {}
+      }
+      conectarCarpeta();
+    });
+    try {
+      idb("readonly", st => {
+        const g = st.get("carpeta");
+        g.onsuccess = async () => {
+          const h = g.result; if (!h) return;
+          carpeta = h;
+          try {
+            const p = await h.queryPermission({ mode: "readwrite" });
+            estadoCarpeta(p === "granted" ? "conectada: " + h.name : h.name + " (pulsa el botón para reactivar)");
+          } catch (e) {}
+        };
+      });
+    } catch (e) {}
+  }
+}
+async function guardarEnCarpeta(nombre, contenido){
+  if (!carpeta) return false;
+  try {
+    if (await carpeta.queryPermission({ mode: "readwrite" }) !== "granted" &&
+        await carpeta.requestPermission({ mode: "readwrite" }) !== "granted") return false;
+    const fh = await carpeta.getFileHandle(nombre, { create: true });
+    const w = await fh.createWritable();
+    await w.write(contenido); await w.close();
+    const s = document.getElementById("salida");
+    s.style.display = "block";
+    s.textContent = "Guardado en la carpeta del grupo (" + carpeta.name + "): " + nombre;
+    return true;
+  } catch (e) { return false; }
+}
+async function descargar(nombre, contenido, tipo){
+  /* 1) directo a la carpeta OneDrive conectada · 2) entrega de la versión web · 3) descarga clásica */
+  if (await guardarEnCarpeta(nombre, contenido)) return;
+  if (window.claude && typeof window.claude.use === "function") {
+    try {
+      const d = await window.claude.use("downloads");
+      if (d) {
+        try { await d.save({ filename: nombre, data: contenido }); }
+        catch (err) { if (err && err.code !== "declined") alert("No se pudo guardar el archivo: " + (err.message || err.code || err)); }
+        return;
+      }
+    } catch (e) { /* sigue con la descarga clásica */ }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([contenido], {type: tipo}));
+  a.download = nombre; a.click(); URL.revokeObjectURL(a.href);
+}
+function nombreBase(){
+  const l = (val("linea").match(/Línea (\d)/) || [,"X"])[1];
+  return `QUALIKER_L${l}_${(val("mes") || "mes").replace(/\s+/g, "-")}_${val("persona").split(/\s+/)[0] || "persona"}`;
+}
+document.getElementById("btnPlantilla").addEventListener("click", () => { const s = document.getElementById("salida"); s.style.display = "block"; s.textContent = plantillaTexto(); });
+document.getElementById("btnCopiarPlantilla").addEventListener("click", () => { navigator.clipboard.writeText(plantillaTexto()).then(() => { const s = document.getElementById("salida"); s.style.display = "block"; s.textContent = plantillaTexto() + "\n[Copiado al portapapeles]"; }); });
+document.getElementById("btnJSON").addEventListener("click", () => {
+  descargar(nombreBase() + ".json", JSON.stringify({ linea: val("linea"), mes: val("mes"), persona: val("persona"), actualizacion: estado.actualizacion, registros: estado.registros }, null, 2), "application/json");
+});
+document.getElementById("btnCSV").addEventListener("click", () => {
+  const s = document.getElementById("salida");
+  if (!estado.registros.length) { s.style.display = "block"; s.textContent = "No hay indicadores que exportar."; return; }
+  const cols = ["tipo_registro","linea","mes","autores","titulo","tipo_pub","base","cuartil","anio","referencia","revista","issn","doi","coautoria","miembros","acreditacion","tipo_fin","entidad","convocatoria","ip","importe","estado","inicio","fin","doctorando","direccion","internacional","persona","tipo_con","fuente","congreso","tipo_c","fecha","lugar","actividad","publico","alcance"];
+  const esc = v => '"' + String(v || "").replace(/"/g, '""') + '"';
+  let csv = cols.join(";") + "\n";
+  estado.registros.forEach(g => { csv += cols.map(c => esc(({ tipo_registro: ETIQ[g.tipo], linea: val("linea"), mes: val("mes"), ...g })[c])).join(";") + "\n"; });
+  descargar(nombreBase() + "_indicadores.csv", "﻿" + csv, "text/csv;charset=utf-8");
+});
+
+/* ---------- importar JSON guardado ---------- */
+document.getElementById("importJSON").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const lector = new FileReader();
+  lector.onload = () => {
+    try { cargarDatos(JSON.parse(lector.result)); document.getElementById("revision").classList.add("visible"); document.getElementById("msgImport").textContent = "Cargado: " + f.name; }
+    catch (err) { document.getElementById("msgImport").textContent = "El archivo no es un JSON válido."; }
+  };
+  lector.readAsText(f);
+});
+
+/* ---------- consolidación (gestión de indicadores) ---------- */
+document.getElementById("consolidar").addEventListener("change", async e => {
+  const files = [...e.target.files]; if (!files.length) return;
+  const msg = document.getElementById("msgCons");
+  const cols = ["tipo_registro","linea","mes","persona_rellena","autores","titulo","tipo_pub","base","cuartil","anio","referencia","revista","issn","doi","coautoria","miembros","acreditacion","tipo_fin","entidad","convocatoria","ip","importe","estado","inicio","fin","doctorando","direccion","internacional","persona","tipo_con","fuente","congreso","tipo_c","fecha","lugar","actividad","publico","alcance"];
+  const esc = v => '"' + String(v || "").replace(/"/g, '""') + '"';
+  let csv = cols.join(";") + "\n", n = 0, errores = [], resumen = {};
+  for (const f of files) {
+    try {
+      const d = JSON.parse(await f.text());
+      (Array.isArray(d.registros) ? d.registros : []).forEach(g => {
+        if (!g || !g.tipo || !CAMPOS[g.tipo]) return;
+        csv += cols.map(c => esc(({ tipo_registro: ETIQ[g.tipo], linea: d.linea || "", mes: d.mes || "", persona_rellena: d.persona || "", ...g })[c])).join(";") + "\n";
+        n++;
+        const k = (d.linea || "(sin línea)") + " · " + ETIQ[g.tipo];
+        resumen[k] = (resumen[k] || 0) + 1;
+      });
+    } catch (err) { errores.push(f.name); }
+  }
+  const s = document.getElementById("salida");
+  s.style.display = "block";
+  s.textContent = "CONSOLIDADO: " + n + " registros de " + files.length + " archivo(s)\n" +
+    Object.entries(resumen).map(([k, v]) => "  " + k + ": " + v).join("\n") +
+    (errores.length ? "\nArchivos ilegibles: " + errores.join(", ") : "");
+  if (n) descargar("QUALIKER_indicadores_consolidados_" + new Date().toISOString().slice(0, 10) + ".csv", "\uFEFF" + csv, "text/csv;charset=utf-8");
+  msg.textContent = n ? "CSV consolidado descargado." : "No se han encontrado registros en los archivos.";
+  e.target.value = "";
+});
+
+/* ---------- registro manual (opcional) ---------- */
+function pintarForm(){
+  const tipo = document.getElementById("tipoReg").value;
+  const cont = document.getElementById("formReg");
+  cont.innerHTML = "";
+  CAMPOS[tipo].forEach(([id, lab]) => {
+    const l = document.createElement("label"); l.textContent = lab; cont.appendChild(l);
+    const i = document.createElement("input"); i.type = "text"; i.id = "f_" + id; cont.appendChild(i);
+  });
+}
+document.getElementById("tipoReg").addEventListener("change", pintarForm);
+pintarForm();
+document.getElementById("btnAddReg").addEventListener("click", () => {
+  const tipo = document.getElementById("tipoReg").value;
+  const g = { tipo }; let vacio = true;
+  CAMPOS[tipo].forEach(([id]) => { const v = val("f_" + id).trim(); if (v) vacio = false; g[id] = v; });
+  if (vacio) { document.getElementById("msgReg").textContent = "Está vacío."; return; }
+  estado.registros.push(g);
+  CAMPOS[tipo].forEach(([id]) => { const el = document.getElementById("f_" + id); if (el) el.value = ""; });
+  document.getElementById("msgReg").textContent = "Añadido.";
+  setTimeout(() => document.getElementById("msgReg").textContent = "", 1500);
+  document.getElementById("revision").classList.add("visible");
+  pintarRevision();
+});
+</script>
+</body>
+</html>
