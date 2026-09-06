@@ -47,7 +47,7 @@
 <body>
 <header>
   <h1>QUALIKER (IT1922-26) · Actualización mensual e indicadores</h1>
-  <p>Pega lo que tengas, la IA lo ordena, tú solo revisas. Los datos no se guardan solos: exporta antes de cerrar.</p>
+  <p>Pega lo que tengas, la IA lo ordena, tú solo revisas. Sube tu actualización como mínimo 24 horas antes de la reunión. Los datos no se guardan solos: exporta antes de cerrar.</p>
 </header>
 <main>
 
@@ -132,7 +132,7 @@
       <button class="btn mini" id="btnAddReg">Añadir</button>
       <span id="msgReg" class="exito"></span>
     </div>
-    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa y exporta. El JSON se guarda en la carpeta compartida de OneDrive (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json); el CSV alimenta el informe anual. Con "Conectar carpeta del grupo" el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos (OneDrive los sube al grupo). Nada sale de tu navegador. La persona responsable de indicadores puede seleccionar varios JSON a la vez en "Consolidar" y obtener un único CSV con todos los registros del grupo.</p>
+    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa y exporta, como mínimo 24 horas antes de la reunión. El JSON se guarda en la carpeta compartida de OneDrive (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json); el CSV alimenta el informe anual. Con "Conectar carpeta del grupo" el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos (OneDrive los sube al grupo). Nada sale de tu navegador. La persona responsable de indicadores puede seleccionar varios JSON a la vez en "Consolidar" y obtener un único CSV con todos los registros del grupo.</p>
   </details>
 </div>
 </main>
@@ -157,7 +157,7 @@ const CAMPOS = {
   difusion: [["actividad","Actividad"],["publico","Público"],["fecha","Fecha"],["alcance","Alcance medido"]]
 };
 const ETIQ = {publicacion:"Publicación", financiacion:"Financiación", tesis:"Tesis", contrato_personal:"Contrato personal", congreso:"Congreso", difusion:"Difusión"};
-const SECS = [["avances","1 · Avances del mes"],["proximo","2 · Próximo mes"],["bloqueos","3 · Bloqueos"],["peticiones","4 · Peticiones al grupo"],["ofertas","5 · Ofertas al grupo"]];
+const SECS = [["avances","1 · Logros y avances del mes"],["proximo","2 · Próximo mes"],["bloqueos","3 · Bloqueos (contarlos a tiempo es un éxito)"],["peticiones","4 · Sinergias consolidadas (con quién, qué y contraprestación pactada)"],["ofertas","5 · Propuestas para el bloque central (tema + qué puedes aportar)"]];
 
 function val(id){ return (document.getElementById(id) || {}).value || ""; }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
@@ -205,7 +205,7 @@ function promptAgente(){
   return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas copiadas de revistas o de un CV, notas sueltas o transcripciones de audio.
 
 Tu tarea, sin inventar absolutamente nada:
-1. Ordena el contenido en cinco apartados: avances, proximo, bloqueos, peticiones (lo que la línea necesita de otras), ofertas (lo que puede ofrecer). Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
+1. Ordena el contenido en cinco apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, bloqueos (problemas y también peticiones de ayuda AÚN SIN CERRAR), peticiones (SOLO colaboraciones entre líneas o subequipos YA cerradas: con quién, en qué y con qué contraprestación pactada, p. ej. coautoría), ofertas (temas que la línea propone para el bloque central de la reunión, indicando qué puede aportar quien lo propone). Importante: una petición de ayuda sin acuerdo cerrado NUNCA va en peticiones; va en bloqueos. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
 2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
 3. Todo dato que NO esté en el volcado se rellena exactamente con "[VERIFICAR]". Nunca lo completes por conocimiento propio.
 4. Responde SOLO con un bloque JSON válido, sin texto antes ni después:
