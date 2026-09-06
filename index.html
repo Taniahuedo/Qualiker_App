@@ -144,7 +144,7 @@
 
 <script>
 "use strict";
-const estado = { actualizacion: { avances: "", proximo: "", bloqueos: "", peticiones: "", ofertas: "" }, registros: [] };
+const estado = { actualizacion: { avances: "", proximo: "", peticiones: "" }, registros: [] };
 
 /* mes prellenado */
 (function(){
@@ -162,7 +162,7 @@ const CAMPOS = {
   difusion: [["actividad","Actividad"],["publico","Público"],["fecha","Fecha"],["alcance","Alcance medido"]]
 };
 const ETIQ = {publicacion:"Publicación", financiacion:"Financiación", tesis:"Tesis", contrato_personal:"Contrato personal", congreso:"Congreso", difusion:"Difusión"};
-const SECS = [["avances","1 · Logros y avances del mes"],["proximo","2 · Próximo mes"],["bloqueos","3 · Bloqueos (contarlos a tiempo es un éxito)"],["peticiones","4 · Sinergias consolidadas (con quién, qué y contraprestación pactada)"],["ofertas","5 · Propuestas para el bloque central (tema + qué puedes aportar)"]];
+const SECS = [["avances","1 · Logros y avances del mes"],["proximo","2 · Próximo mes"],["peticiones","3 · Sinergias consolidadas (con quién, qué y contraprestación pactada)"]];
 
 function val(id){ return (document.getElementById(id) || {}).value || ""; }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
@@ -210,11 +210,11 @@ function promptAgente(){
   return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas copiadas de revistas o de un CV, notas sueltas o transcripciones de audio.
 
 Tu tarea, sin inventar absolutamente nada:
-1. Ordena el contenido en cinco apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, bloqueos (problemas y también peticiones de ayuda AÚN SIN CERRAR), peticiones (SOLO colaboraciones entre líneas o subequipos YA cerradas: con quién, en qué y con qué contraprestación pactada, p. ej. coautoría), ofertas (temas que la línea propone para el bloque central de la reunión, indicando qué puede aportar quien lo propone). Importante: una petición de ayuda sin acuerdo cerrado NUNCA va en peticiones; va en bloqueos. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
+1. Ordena el contenido en tres apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, peticiones (SOLO colaboraciones entre líneas o subequipos YA cerradas: con quién, en qué y con qué contraprestación pactada, p. ej. coautoría). Importante: las peticiones de ayuda sin acuerdo cerrado y las propuestas de temas para reuniones NO forman parte de la actualización escrita (se tratan en la reunión o en el subequipo): no las incluyas en ningún apartado. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
 2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, estado, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
 3. Todo dato que NO esté en el volcado se rellena exactamente con "[VERIFICAR]". Nunca lo completes por conocimiento propio.
 4. Responde SOLO con un bloque JSON válido, sin texto antes ni después:
-{"linea":"${val("linea")}","mes":"${val("mes")}","persona":"${val("persona")}","actualizacion":{"avances":"","proximo":"","bloqueos":"","peticiones":"","ofertas":""},"registros":[{"tipo":"publicacion","autores":"...","titulo":"..."}]}
+{"linea":"${val("linea")}","mes":"${val("mes")}","persona":"${val("persona")}","actualizacion":{"avances":"","proximo":"","peticiones":""},"registros":[{"tipo":"publicacion","autores":"...","titulo":"..."}]}
 
 VOLCADO:
 `;
