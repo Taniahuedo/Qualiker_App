@@ -154,7 +154,7 @@ const estado = { actualizacion: { avances: "", proximo: "", bloqueos: "", petici
 })();
 
 const CAMPOS = {
-  publicacion: [["autores","Autores/as (orden de firma)"],["titulo","Título"],["tipo_pub","Tipo (artículo indexado / libro / capítulo / otras)"],["base","Base de datos"],["cuartil","Cuartil"],["anio","Año"],["referencia","Referencia completa"],["revista","Revista/editorial"],["issn","ISSN/ISBN"],["doi","DOI"],["coautoria","Coautoría entre miembros (Sí/No)"],["miembros","Miembros que firman"],["acreditacion","PDF de acreditación"]],
+  publicacion: [["autores","Autores/as (orden de firma)"],["titulo","Título"],["tipo_pub","Tipo (artículo indexado / libro / capítulo / otras)"],["estado","Estado (en preparación / enviada / aceptada / publicada)"],["base","Base de datos"],["cuartil","Cuartil"],["anio","Año"],["referencia","Referencia completa"],["revista","Revista/editorial"],["issn","ISSN/ISBN"],["doi","DOI"],["coautoria","Coautoría entre miembros (Sí/No)"],["miembros","Miembros que firman"],["acreditacion","PDF de acreditación"]],
   financiacion: [["tipo_fin","Tipo (competitiva/contrato/convenio/otros)"],["titulo","Título"],["entidad","Entidad"],["convocatoria","Convocatoria"],["ip","IP/responsable"],["importe","Importe (€)"],["estado","Estado"],["inicio","Inicio"],["fin","Fin"]],
   tesis: [["doctorando","Doctorando/a"],["titulo","Título"],["direccion","Dirección"],["estado","Estado (en curso/defendida)"],["internacional","Mención internacional (Sí/No)"],["anio","Año defensa"]],
   contrato_personal: [["persona","Persona"],["tipo_con","Tipo (pre/posdoctoral)"],["fuente","Fuente de financiación"],["inicio","Inicio"],["fin","Fin"]],
@@ -211,7 +211,7 @@ function promptAgente(){
 
 Tu tarea, sin inventar absolutamente nada:
 1. Ordena el contenido en cinco apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, bloqueos (problemas y también peticiones de ayuda AÚN SIN CERRAR), peticiones (SOLO colaboraciones entre líneas o subequipos YA cerradas: con quién, en qué y con qué contraprestación pactada, p. ej. coautoría), ofertas (temas que la línea propone para el bloque central de la reunión, indicando qué puede aportar quien lo propone). Importante: una petición de ayuda sin acuerdo cerrado NUNCA va en peticiones; va en bloqueos. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
-2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
+2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, estado, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
 3. Todo dato que NO esté en el volcado se rellena exactamente con "[VERIFICAR]". Nunca lo completes por conocimiento propio.
 4. Responde SOLO con un bloque JSON válido, sin texto antes ni después:
 {"linea":"${val("linea")}","mes":"${val("mes")}","persona":"${val("persona")}","actualizacion":{"avances":"","proximo":"","bloqueos":"","peticiones":"","ofertas":""},"registros":[{"tipo":"publicacion","autores":"...","titulo":"..."}]}
@@ -382,14 +382,55 @@ document.getElementById("btnCopiarPlantilla").addEventListener("click", () => { 
 document.getElementById("btnJSON").addEventListener("click", () => {
   descargar(nombreBase() + ".json", JSON.stringify({ linea: val("linea"), mes: val("mes"), persona: val("persona"), actualizacion: estado.actualizacion, registros: estado.registros }, null, 2), "application/json");
 });
+/* ---------- CSV con la estructura del Excel del informe anual (Indicadores26_29.xlsx) ---------- */
+function csvInforme(regs){
+  const esc = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const fila = a => a.map(esc).join(";") + "\n";
+  const por = t => regs.filter(x => x.g.tipo === t);
+  const num = l => (String(l).match(/\d/) || [""])[0];
+  const si = v => String(v || "").toLowerCase().startsWith("s") ? "Sí" : "";
+  const lleno = v => { const s = String(v || "").trim(); return s && !s.includes("[VERIFICAR]"); };
+  let c = "";
+  const pubs = por("publicacion"), tesis = por("tesis"), contr = por("contrato_personal"), fin = por("financiacion");
+  const comp = fin.filter(x => String(x.g.tipo_fin || "").toLowerCase().startsWith("competi"));
+  const acred = pubs.filter(x => lleno(x.g.acreditacion));
+  c += fila(["GENERAL", "COMPROMETIDO", "REGISTRADO", "ACREDITADO", "NO ACREDITADO"]);
+  c += fila(["Artículos", 60, pubs.length, acred.length, pubs.length - acred.length]);
+  c += fila(["Tesis", 10, tesis.length, "", ""]);
+  c += fila(["Contratos", 25, contr.length, "", ""]);
+  c += fila(["Proyectos", 25, fin.length, "", ""]);
+  c += fila(["Proyectos comp.", 18, comp.length, "", ""]) + "\n";
+  c += fila(["PUBLICACIONES — pegar en hoja Lineas"]);
+  c += fila(["Persona resp.", "Línea", "Título", "Egoera/Estado", "Revista", "Año", "DOI", "Cuartil", "Base", "Coautoría interna", "Miembros", "Acreditación", "Mes registro"]);
+  pubs.forEach(x => { const g = x.g; c += fila([x.persona, num(x.linea), g.titulo, g.estado, g.revista, g.anio, g.doi, g.cuartil, g.base, g.coautoria, g.miembros, g.acreditacion, x.mes]); });
+  c += "\n" + fila(["TESIS — pegar en hoja Contenido"]);
+  c += fila(["Línea", "Arduraduna", "Doctorando", "Defendida", "Int.", "Fecha orient.", "Mes registro"]);
+  tesis.forEach(x => { const g = x.g; c += fila([num(x.linea), g.direccion || x.persona, g.doctorando, String(g.estado || "").toLowerCase().startsWith("defend") ? "Sí" : "", si(g.internacional), g.anio, x.mes]); });
+  c += "\n" + fila(["CONTRATOS — pegar en hoja Contenido"]);
+  c += fila(["Línea", "Arduraduna", "Persona", "Predoc", "Postdoc", "Fuente", "Inicio", "Fin", "Mes registro"]);
+  contr.forEach(x => { const g = x.g; const t = String(g.tipo_con || "").toLowerCase(); c += fila([num(x.linea), x.persona, g.persona, t.includes("pre") ? "1" : "", t.includes("pos") ? "1" : "", g.fuente, g.inicio, g.fin, x.mes]); });
+  c += "\n" + fila(["PROYECTOS/FINANCIACIÓN — pegar en hoja Contenido"]);
+  c += fila(["Línea", "Arduraduna", "Título", "Conv./Tipo", "Comp.", "Cantidad (€)", "Entidad", "Estado", "Inicio", "Fin", "Mes registro"]);
+  fin.forEach(x => { const g = x.g; c += fila([num(x.linea), g.ip || x.persona, g.titulo, [g.convocatoria, g.tipo_fin].filter(Boolean).join(" / "), String(g.tipo_fin || "").toLowerCase().startsWith("competi") ? "Sí" : "", g.importe, g.entidad, g.estado, g.inicio, g.fin, x.mes]); });
+  const cong = por("congreso"), dif = por("difusion");
+  if (cong.length) {
+    c += "\n" + fila(["CONGRESOS — información complementaria"]);
+    c += fila(["Línea", "Autores/as", "Título", "Congreso", "Tipo", "Fecha", "Lugar", "Mes registro"]);
+    cong.forEach(x => { const g = x.g; c += fila([num(x.linea), g.autores, g.titulo, g.congreso, g.tipo_c, g.fecha, g.lugar, x.mes]); });
+  }
+  if (dif.length) {
+    c += "\n" + fila(["DIFUSIÓN/TRANSFERENCIA — información complementaria (web del grupo)"]);
+    c += fila(["Línea", "Actividad", "Público", "Fecha", "Alcance", "Mes registro"]);
+    dif.forEach(x => { const g = x.g; c += fila([num(x.linea), g.actividad, g.publico, g.fecha, g.alcance, x.mes]); });
+  }
+  return c;
+}
+
 document.getElementById("btnCSV").addEventListener("click", () => {
   const s = document.getElementById("salida");
   if (!estado.registros.length) { s.style.display = "block"; s.textContent = "No hay indicadores que exportar."; return; }
-  const cols = ["tipo_registro","linea","mes","autores","titulo","tipo_pub","base","cuartil","anio","referencia","revista","issn","doi","coautoria","miembros","acreditacion","tipo_fin","entidad","convocatoria","ip","importe","estado","inicio","fin","doctorando","direccion","internacional","persona","tipo_con","fuente","congreso","tipo_c","fecha","lugar","actividad","publico","alcance"];
-  const esc = v => '"' + String(v || "").replace(/"/g, '""') + '"';
-  let csv = cols.join(";") + "\n";
-  estado.registros.forEach(g => { csv += cols.map(c => esc(({ tipo_registro: ETIQ[g.tipo], linea: val("linea"), mes: val("mes"), ...g })[c])).join(";") + "\n"; });
-  descargar(nombreBase() + "_indicadores.csv", "﻿" + csv, "text/csv;charset=utf-8");
+  const regs = estado.registros.map(g => ({ g, linea: val("linea"), mes: val("mes"), persona: val("persona") }));
+  descargar(nombreBase() + "_indicadores.csv", "\uFEFF" + csvInforme(regs), "text/csv;charset=utf-8");
 });
 
 /* ---------- importar JSON guardado ---------- */
@@ -407,15 +448,13 @@ document.getElementById("importJSON").addEventListener("change", e => {
 document.getElementById("consolidar").addEventListener("change", async e => {
   const files = [...e.target.files]; if (!files.length) return;
   const msg = document.getElementById("msgCons");
-  const cols = ["tipo_registro","linea","mes","persona_rellena","autores","titulo","tipo_pub","base","cuartil","anio","referencia","revista","issn","doi","coautoria","miembros","acreditacion","tipo_fin","entidad","convocatoria","ip","importe","estado","inicio","fin","doctorando","direccion","internacional","persona","tipo_con","fuente","congreso","tipo_c","fecha","lugar","actividad","publico","alcance"];
-  const esc = v => '"' + String(v || "").replace(/"/g, '""') + '"';
-  let csv = cols.join(";") + "\n", n = 0, errores = [], resumen = {};
+  const regs = []; let n = 0, errores = [], resumen = {};
   for (const f of files) {
     try {
       const d = JSON.parse(await f.text());
       (Array.isArray(d.registros) ? d.registros : []).forEach(g => {
         if (!g || !g.tipo || !CAMPOS[g.tipo]) return;
-        csv += cols.map(c => esc(({ tipo_registro: ETIQ[g.tipo], linea: d.linea || "", mes: d.mes || "", persona_rellena: d.persona || "", ...g })[c])).join(";") + "\n";
+        regs.push({ g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "" });
         n++;
         const k = (d.linea || "(sin línea)") + " · " + ETIQ[g.tipo];
         resumen[k] = (resumen[k] || 0) + 1;
