@@ -54,6 +54,11 @@
   .formreg textarea{min-height:56px;}
   .adj{font-size:.78rem; color:var(--gris); display:block; margin-top:3px;}
   .exportar{border-top:1px solid var(--borde); margin-top:14px; padding-top:6px;}
+  .dup{display:block; background:#FDECEA; color:#8a2b22; border-radius:4px; padding:3px 7px; margin-top:4px; font-size:.8rem;}
+  .grupotabla{max-height:420px; overflow:auto; border:1px solid var(--borde); border-radius:8px; margin-top:8px; padding:0 8px 8px;}
+  .grupotabla h3{position:sticky; top:0; background:#fff; padding:8px 0 4px; margin:0;}
+  .enlace{background:none; border:none; color:var(--azul); text-decoration:underline; cursor:pointer; font-size:.85rem; padding:0; margin-left:6px;}
+  #buscarGrupo{max-width:360px; margin-top:8px;}
   @media (max-width:640px){ .formreg .grid{grid-template-columns:1fr;} }
 </style>
 </head>
@@ -84,6 +89,16 @@
   <p class="nota" id="zonaCarpeta" hidden>Guardado en OneDrive: <span id="estadoCarpeta">sin conectar</span>
     <button class="btn mini sec" id="btnCarpeta" type="button">Conectar carpeta del grupo (OneDrive)</button>
     <span id="msgCarpeta" class="exito"></span></p>
+</div>
+
+<div class="card" id="cardGrupo">
+  <div class="paso"><span class="num">0</span><h2>Antes de empezar, mira lo que ya hay en el grupo</h2></div>
+  <p class="nota">Para no registrar dos veces lo que otra persona ya ha metido: un proyecto compartido, una tesis, un centro que ya se contactó. La app lee los JSON guardados en la carpeta del grupo y, a partir de ahí, te avisa si lo que añades se parece a algo ya registrado.</p>
+  <button class="btn grande sec" id="btnVerGrupo">Ver lo que ya hay en el grupo</button>
+  <button class="enlace" id="btnGrupoArchivos" type="button">o elige tú los JSON</button>
+  <input type="file" id="grupoArchivos" accept=".json" multiple hidden>
+  <span id="msgGrupo" class="exito"></span>
+  <div id="zonaGrupo"></div>
 </div>
 
 <div class="card">
@@ -121,6 +136,7 @@
 <div class="card" id="revision">
   <div class="paso"><span class="num">✓</span><h2>Revisa y exporta</h2></div>
   <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que faltaba: pulsa «Editar» para completarlo ahora o déjalo para el mes que viene. Con «Adjuntar» subes el documento que lo acredita.</p>
+  <p class="nota" id="notaDup"></p>
   <div id="editSecciones"></div>
   <div id="listaRegs"></div>
   <div class="exportar">
@@ -143,7 +159,7 @@
     <label style="margin-top:14px">Consolidar varios JSON (persona responsable de indicadores): genera el CSV de indicadores, el Excel de transferencia y el de colaboraciones y contactos de todo el grupo</label>
     <input type="file" id="consolidar" accept=".json" multiple>
     <span id="msgCons" class="exito"></span>
-    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa, adjunta y exporta, como mínimo 24 horas antes de la reunión. El JSON se guarda en la carpeta del grupo (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json). Con «Conectar carpeta del grupo» el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos; los adjuntos van a las subcarpetas «Material de indicadores» y «Material de transferencia», que la app crea si no existen. La app no envía nada a ningún servidor; lo que pegas en tu chatbot sí pasa por ese servicio.</p>
+    <p class="nota" style="margin-top:12px">Cómo funciona: 0 mira lo que ya hay en el grupo → 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa, adjunta y exporta, como mínimo 24 horas antes de la reunión. El JSON se guarda en la carpeta del grupo (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json). Con «Conectar carpeta del grupo» el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos; los adjuntos van a las subcarpetas «Material de indicadores» y «Material de transferencia», que la app crea si no existen. La app no envía nada a ningún servidor; lo que pegas en tu chatbot sí pasa por ese servicio.</p>
   </details>
 </div>
 </main>
@@ -341,7 +357,8 @@ document.getElementById("btnProcesar").addEventListener("click", () => {
   try {
     const d = extraerJSON(val("respuesta"));
     cargarDatos(d, true);
-    ok.textContent = "Listo: revisa abajo y exporta.";
+    const nd = estado.registros.filter(g => duplicadosDe(g).length).length;
+    ok.textContent = nd ? "Listo. Ojo: " + nd + " registro(s) se parecen a algo que ya está en el grupo; míralos abajo." : "Listo: revisa abajo y exporta.";
     mostrarRevision();
     document.getElementById("revision").scrollIntoView({ behavior: "smooth" });
   } catch (e) {
@@ -385,7 +402,13 @@ function pintarRevision(){
   });
   const lr = document.getElementById("listaRegs");
   lr.innerHTML = "";
-  if (!estado.registros.length) { lr.innerHTML = '<p class="nota">Sin registros nuevos este mes.</p>'; return; }
+  let nDup = 0;
+  const notaDup = document.getElementById("notaDup");
+  const pintarNotaDup = () => {
+    if (!grupo.leido) notaDup.innerHTML = 'Consejo: pulsa «Ver lo que ya hay en el grupo» (arriba, paso 0) y la app marcará lo que otra persona ya haya registrado.';
+    else notaDup.innerHTML = nDup ? `<span class="dup" style="display:inline-block">⚠ ${nDup} registro(s) se parecen a algo ya registrado en el grupo. Míralo antes de exportar: si es lo mismo, quítalo; si es distinto, déjalo.</span>` : "Comparado con lo que ya hay en el grupo: sin posibles duplicados.";
+  };
+  if (!estado.registros.length) { lr.innerHTML = '<p class="nota">Sin registros nuevos este mes.</p>'; pintarNotaDup(); return; }
   Object.entries(BLOQUES).forEach(([b, nombre]) => {
     const idx = estado.registros.map((g, i) => [g, i]).filter(([g]) => TIPOS[g.tipo].bloque === b);
     if (!idx.length) return;
@@ -397,7 +420,9 @@ function pintarRevision(){
       const extra = (String(g.coautoria || "").toLowerCase().startsWith("s")) ? ' <span class="pill">coautoría interna</span>' : "";
       const pend = Object.values(g).some(v => typeof v === "string" && v.includes("[VERIFICAR]")) ? ' <span class="verificar">[VERIFICAR]</span>' : "";
       const adj = (g.adjuntos || []).map(a => `<span class="adj">📎 ${escapeHtml(a.nombre)}${a.estado !== "guardado" ? " · " + escapeHtml(a.estado) : ""}</span>`).join("") || '<span class="adj">—</span>';
-      tr.innerHTML = `<td>${TIPOS[g.tipo].etiq}</td><td>${marcarVerificar(resumenRegistro(g) || "(sin título)")}${extra}${pend}</td><td>${adj}</td>
+      const dups = duplicadosDe(g);
+      if (dups.length) nDup++;
+      tr.innerHTML = `<td>${TIPOS[g.tipo].etiq}</td><td>${marcarVerificar(resumenRegistro(g) || "(sin título)")}${extra}${pend}${avisoDupHtml(dups)}</td><td>${adj}</td>
         <td class="acc"><button class="btn mini sec" data-acc="editar" data-i="${i}">Editar</button><button class="btn mini sec" data-acc="adjuntar" data-i="${i}">Adjuntar</button><button class="btn mini rojo" data-acc="quitar" data-i="${i}">Quitar</button></td>`;
       tabla.appendChild(tr);
       if (editando === i) {
@@ -408,6 +433,7 @@ function pintarRevision(){
     });
     lr.appendChild(tabla);
   });
+  pintarNotaDup();
 }
 document.getElementById("listaRegs").addEventListener("click", ev => {
   const b = ev.target.closest("button[data-acc]"); if (!b) return;
@@ -451,9 +477,12 @@ function crearFormulario(tipoInicial, valores, alGuardar, alCancelar, textoBoton
       } else if (o.largo) { el = document.createElement("textarea"); el.value = datos[id] || ""; }
       else { el = document.createElement("input"); el.type = "text"; el.value = datos[id] || ""; if (o.link) el.placeholder = "https://…"; }
       el.dataset.campo = id;
-      el.addEventListener(o.op ? "change" : "input", () => { datos[id] = el.value; if (id === "subtipo") pintar(); });
+      el.addEventListener(o.op ? "change" : "input", () => { datos[id] = el.value; if (id === "subtipo") pintar(); else avisoForm(); });
       w.appendChild(el); grid.appendChild(w);
     });
+    const aviso = document.createElement("div"); caja.appendChild(aviso);
+    function avisoForm(){ aviso.innerHTML = avisoDupHtml(duplicadosDe(Object.assign({}, datos, { tipo }))); }
+    avisoForm();
     let inpAdj = null;
     if (conAdjuntos) {
       const l = document.createElement("label"); l.textContent = "Adjuntar documentos (irán a «" + CARPETA_MATERIAL[TIPOS[tipo].bloque] + "»)"; caja.appendChild(l);
@@ -528,7 +557,7 @@ if (("showDirectoryPicker" in window) && esVentanaPrincipal) {
       g.onsuccess = async () => {
         const h = g.result; if (!h) return;
         carpeta = h;
-        try { const p = await h.queryPermission({ mode: "readwrite" }); estadoCarpeta(p === "granted" ? "conectada: " + h.name : h.name + " (pulsa el botón para reactivar)"); } catch (e) {}
+        try { const p = await h.queryPermission({ mode: "readwrite" }); estadoCarpeta(p === "granted" ? "conectada: " + h.name : h.name + " (pulsa el botón para reactivar)"); if (p === "granted") leerGrupoCarpeta(true); } catch (e) {}
       };
     });
   } catch (e) {}
@@ -587,6 +616,150 @@ async function adjuntarArchivos(reg, files){
   }
   avisoSalida(reg.adjuntos.length + " adjunto(s) en este registro. " + (carpeta ? "" : "Sin carpeta conectada: los archivos se han descargado con el nombre ya puesto; muévelos a la subcarpeta «" + sub + "» del OneDrive del grupo."));
 }
+
+/* ---------- lo que ya hay en el grupo: lee los JSON de la carpeta y avisa de posibles duplicados ---------- */
+const grupo = { leido: false, regs: [], archivos: [], ilegibles: [], origen: "", hora: "" };
+function normTxt(s){ return String(s || "").replace(/\[VERIFICAR\]/gi, " ").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+const TIPOS_PERSONA = ["tesis", "contrato_personal"];
+const TIPOS_RED = ["colaboracion_externa", "contacto_centro"];
+function claveRegistro(g){
+  switch (g.tipo) {
+    case "tesis": return normTxt(g.doctorando) || normTxt(g.titulo);
+    case "contrato_personal": return normTxt(g.persona);
+    case "colaboracion_externa": return normTxt(g.entidad);
+    case "contacto_centro": return normTxt(g.centro);
+    default: return normTxt(g.titulo);
+  }
+}
+function comparables(t1, t2){ return t1 === t2 || (TIPOS_RED.includes(t1) && TIPOS_RED.includes(t2)); }
+function parecidos(a, b, minimo){
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const [c, l] = a.length <= b.length ? [a, b] : [b, a];
+  if (c.length >= minimo && (" " + l + " ").includes(" " + c + " ")) return true;
+  const pa = new Set(a.split(" ").filter(w => w.length > 2)), pb = new Set(b.split(" ").filter(w => w.length > 2));
+  if (pa.size < 3 || pb.size < 3) return false;
+  let comunes = 0; pa.forEach(w => { if (pb.has(w)) comunes++; });
+  return comunes / Math.min(pa.size, pb.size) >= 0.8;
+}
+const minimoDe = tipo => TIPOS_PERSONA.includes(tipo) ? 3 : (TIPOS_RED.includes(tipo) ? 5 : 12);
+function esArchivoActual(x){ return !!val("persona") && normTxt(x.persona) === normTxt(val("persona")) && x.linea === val("linea") && normTxt(x.mes) === normTxt(val("mes")); }
+function duplicadosDe(g){
+  if (!grupo.leido || !g || !TIPOS[g.tipo]) return [];
+  const k = claveRegistro(g); if (!k) return [];
+  return grupo.regs.filter(x => comparables(g.tipo, x.g.tipo) && !esArchivoActual(x) && parecidos(k, x.clave, minimoDe(g.tipo)));
+}
+const sinVerificar = s => (s && !String(s).includes("[VERIFICAR]")) ? String(s) : "";
+function quienCuando(x){ return (x.persona || "sin nombre") + (x.linea || x.mes ? " (" + [x.linea, x.mes].filter(Boolean).join(", ") + ")" : ""); }
+function avisoDupHtml(dups){
+  if (!dups.length) return "";
+  const partes = dups.slice(0, 3).map(x => {
+    const g = x.g;
+    if (g.tipo === "contacto_centro") {
+      return escapeHtml(g.centro) + ": contactado" + (sinVerificar(g.fecha) ? " el " + escapeHtml(g.fecha) : "") + (sinVerificar(g.quien) ? " por " + escapeHtml(g.quien) : "") +
+        [g.proyecto, g.motivo, g.resultado, g.detalle].map(sinVerificar).filter(Boolean).map(s => " · " + escapeHtml(s)).join("") + " — lo registró " + escapeHtml(quienCuando(x));
+    }
+    return escapeHtml(TIPOS[g.tipo].etiq) + " «" + escapeHtml(resumenRegistro(g)) + "» — lo registró " + escapeHtml(quienCuando(x));
+  });
+  return `<span class="dup">⚠ Posible duplicado. Ya en el grupo: ${partes.join("; ")}${dups.length > 3 ? "; y " + (dups.length - 3) + " más" : ""}</span>`;
+}
+function detalleRegistro(g){
+  const euros = s => sinVerificar(s) ? (/€|eur/i.test(s) ? s : s + " €") : "";
+  const partes = {
+    publicacion: [g.estado, g.revista],
+    tesis: [g.estado, g.direccion],
+    contrato_personal: [g.tipo_con, g.fuente, sinVerificar(g.inicio) && "desde " + g.inicio],
+    financiacion: [g.tipo_fin, g.entidad, euros(g.importe), g.estado],
+    congreso: [g.congreso, g.fecha],
+    transferencia: [g.fecha, g.entidad],
+    colaboracion_externa: [g.estado, g.proyecto],
+    contacto_centro: [g.fecha, sinVerificar(g.quien) && "por " + g.quien, g.proyecto, g.detalle]
+  }[g.tipo] || [];
+  return partes.map(sinVerificar).filter(Boolean).join(" · ");
+}
+async function jsonDeCarpeta(dir, ruta, prof, salida){
+  for await (const h of dir.values()) {
+    if (h.kind === "directory") {
+      if (prof < 2 && !/^Material de /i.test(h.name)) await jsonDeCarpeta(h, ruta + h.name + "/", prof + 1, salida);
+    } else if (/\.json$/i.test(h.name)) {
+      salida.push({ nombre: ruta + h.name, leer: async () => (await h.getFile()).text() });
+    }
+  }
+}
+async function cargarGrupo(fuentes, origen){
+  const regs = [], archivos = [], ilegibles = [], vistos = new Set();
+  for (const f of fuentes) {
+    let d;
+    try { d = JSON.parse(await f.leer()); } catch (e) { ilegibles.push(f.nombre); continue; }
+    if (!d || !Array.isArray(d.registros)) continue;
+    archivos.push(f.nombre);
+    d.registros.map(normalizarRegistro).filter(Boolean).forEach(g => {
+      const x = { g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "", archivo: f.nombre, clave: claveRegistro(g) };
+      const firma = [g.tipo, x.clave || JSON.stringify(g), normTxt(x.persona)].join("|");
+      if (vistos.has(firma)) return;   /* el mismo registro, guardado por la misma persona en varios archivos */
+      vistos.add(firma); regs.push(x);
+    });
+  }
+  Object.assign(grupo, { leido: true, regs, archivos, ilegibles, origen, hora: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) });
+  document.getElementById("msgGrupo").textContent = "";
+  pintarGrupo();
+  pintarRevision();
+}
+function pintarGrupo(){
+  const z = document.getElementById("zonaGrupo");
+  const porBloque = Object.entries(BLOQUES).map(([b, n]) => [n, grupo.regs.filter(x => TIPOS[x.g.tipo].bloque === b).length]).filter(([, c]) => c).map(([n, c]) => n + " " + c).join(" · ");
+  z.innerHTML = `<p class="nota" style="margin-top:10px"><b>${grupo.regs.length}</b> registro(s) en ${grupo.archivos.length} archivo(s) de ${escapeHtml(grupo.origen)}, leído a las ${grupo.hora}${porBloque ? ". " + escapeHtml(porBloque) : ""}.` +
+    (grupo.ilegibles.length ? ` Archivos que no se pudieron leer: ${escapeHtml(grupo.ilegibles.join(", "))}.` : "") +
+    ` <button class="enlace" id="btnReleerGrupo" type="button">actualizar</button></p>` +
+    (grupo.regs.length ? `<input type="text" id="buscarGrupo" placeholder="Buscar: título, centro, persona, proyecto…"><div class="grupotabla" id="tablasGrupo"></div>`
+      : `<p class="nota">Todavía no hay nada registrado ahí. Si eres la primera persona, adelante.</p>`);
+  document.getElementById("btnReleerGrupo").addEventListener("click", () => { if (grupo.origen.startsWith("la carpeta")) leerGrupoCarpeta(false); else document.getElementById("grupoArchivos").click(); });
+  if (!grupo.regs.length) return;
+  document.getElementById("buscarGrupo").addEventListener("input", pintarTablasGrupo);
+  pintarTablasGrupo();
+}
+function pintarTablasGrupo(){
+  const cont = document.getElementById("tablasGrupo"); if (!cont) return;
+  const q = normTxt(val("buscarGrupo"));
+  const texto = x => normTxt([TIPOS[x.g.tipo].etiq, resumenRegistro(x.g), detalleRegistro(x.g), x.persona, x.linea, x.mes, x.g.proyecto, x.g.miembros].join(" "));
+  cont.innerHTML = "";
+  let total = 0;
+  Object.entries(BLOQUES).forEach(([b, nombre]) => {
+    const lista = grupo.regs.filter(x => TIPOS[x.g.tipo].bloque === b && (!q || texto(x).includes(q)))
+      .sort((p, r) => (p.g.tipo + p.clave).localeCompare(r.g.tipo + r.clave, "es"));
+    if (!lista.length) return;
+    total += lista.length;
+    const h = document.createElement("h3"); h.textContent = nombre + " (" + lista.length + ")"; cont.appendChild(h);
+    const t = document.createElement("table");
+    t.innerHTML = "<tr><th>Tipo</th><th>Registro</th><th>Detalle</th><th>Quién lo registró</th></tr>";
+    lista.forEach(x => {
+      const repetido = grupo.regs.some(y => y !== x && normTxt(y.persona) !== normTxt(x.persona) && comparables(x.g.tipo, y.g.tipo) && parecidos(x.clave, y.clave, minimoDe(x.g.tipo)));
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${escapeHtml(TIPOS[x.g.tipo].etiq)}</td><td>${marcarVerificar(resumenRegistro(x.g) || "(sin título)")}${repetido ? ' <span class="pill" style="background:#FDECEA;color:#8a2b22">registrado por más de una persona</span>' : ""}</td><td>${escapeHtml(detalleRegistro(x.g))}</td><td>${escapeHtml(quienCuando(x))}</td>`;
+      t.appendChild(tr);
+    });
+    cont.appendChild(t);
+  });
+  if (!total) cont.innerHTML = '<p class="nota" style="padding-top:8px">Nada coincide con la búsqueda.</p>';
+}
+const puedeCarpeta = ("showDirectoryPicker" in window) && esVentanaPrincipal;
+async function leerGrupoCarpeta(silencioso){
+  const msg = document.getElementById("msgGrupo");
+  if (!carpeta) { if (silencioso) return; await conectarCarpeta(); if (!carpeta) return; }
+  if (!(await permisoCarpeta())) { if (!silencioso) msg.textContent = "Sin permiso para leer la carpeta: pulsa de nuevo y acepta."; return; }
+  const fuentes = [];
+  try { await jsonDeCarpeta(carpeta, "", 0, fuentes); }
+  catch (e) { if (!silencioso) msg.textContent = "No se pudo leer la carpeta. Prueba con «o elige tú los JSON»."; return; }
+  await cargarGrupo(fuentes, "la carpeta «" + carpeta.name + "»");
+}
+document.getElementById("btnVerGrupo").addEventListener("click", () => { if (puedeCarpeta) leerGrupoCarpeta(false); else document.getElementById("grupoArchivos").click(); });
+document.getElementById("btnGrupoArchivos").addEventListener("click", () => document.getElementById("grupoArchivos").click());
+if (!puedeCarpeta) document.getElementById("btnGrupoArchivos").hidden = true;
+document.getElementById("grupoArchivos").addEventListener("change", async e => {
+  const files = [...e.target.files];
+  if (files.length) await cargarGrupo(files.map(f => ({ nombre: f.name, leer: () => f.text() })), files.length === 1 ? "el archivo elegido" : "los archivos elegidos");
+  e.target.value = "";
+});
 
 /* ---------- salida: plantilla ---------- */
 function plantillaTexto(){
