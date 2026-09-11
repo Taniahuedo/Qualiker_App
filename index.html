@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QUALIKER · Actualización mensual e indicadores</title>
 <style>
-  :root{ --azul:#473A70; --azul2:#5E4F91; --claro:#F0EDF7; --borde:#D9D3E6; --texto:#251F35; --gris:#6B6383; --ok:#2e7d32; }
+  :root{ --azul:#473A70; --azul2:#5E4F91; --claro:#F0EDF7; --borde:#D9D3E6; --texto:#251F35; --gris:#6B6383; --ok:#2e7d32; --lila:#A9669C; }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{font-family:"Segoe UI", system-ui, -apple-system, sans-serif; color:var(--texto); background:#f8f6fb; line-height:1.45;}
   header{background:var(--azul); color:#fff; padding:14px 24px; display:flex; align-items:center; gap:16px;}
@@ -13,11 +13,12 @@
   .logochip img{height:44px; display:block;}
   header h1{font-size:1.2rem; font-weight:600;}
   header p{font-size:.85rem; opacity:.85; margin-top:2px;}
-  main{max-width:900px; margin:0 auto; padding:20px 24px 60px;}
+  main{max-width:960px; margin:0 auto; padding:20px 24px 60px;}
   .card{background:#fff; border:1px solid var(--borde); border-radius:10px; padding:16px 18px; margin-bottom:14px;}
   .paso{display:flex; gap:12px; align-items:baseline; margin-bottom:8px;}
   .num{background:var(--azul); color:#fff; border-radius:50%; min-width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; align-self:center;}
   .card h2{font-size:1.05rem; color:var(--azul);}
+  .card h3{font-size:.95rem; color:var(--azul); margin:16px 0 4px;}
   label{display:block; font-size:.8rem; color:var(--gris); margin:6px 0 3px;}
   input[type=text], select, textarea{ width:100%; padding:8px 10px; border:1px solid var(--borde); border-radius:6px; font-size:.92rem; font-family:inherit; background:#fff;}
   textarea{min-height:110px; resize:vertical;}
@@ -28,22 +29,32 @@
   .btn.sec{background:#fff; color:var(--azul); border:1px solid var(--azul);}
   .btn.mini{padding:4px 10px; font-size:.8rem; margin:4px 4px 0 0;}
   .btn.rojo{background:#fff; color:#a33; border:1px solid #c88;}
+  .btn.anadir{background:var(--claro); color:var(--azul); border:1px solid var(--borde); font-weight:600;}
+  .btn.anadir.activo{background:var(--azul); color:#fff;}
   .nota{font-size:.83rem; color:var(--gris); margin-top:5px;}
   .exito{color:var(--ok); font-size:.88rem; margin-left:8px;}
   .error{color:#a33; font-size:.88rem; margin-left:8px;}
   .verificar{background:#FFF3CD; padding:1px 4px; border-radius:3px;}
-  table{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:8px;}
+  table{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:6px;}
   th{background:var(--azul); color:#fff; text-align:left; padding:6px 8px; font-weight:600;}
   td{border-bottom:1px solid var(--borde); padding:6px 8px; vertical-align:top;}
+  td.acc{white-space:nowrap; width:1%;}
   .pill{display:inline-block; background:var(--claro); color:var(--azul); border-radius:12px; padding:2px 10px; font-size:.78rem; margin:2px 4px 2px 0;}
   .grabando{background:#c62828 !important; color:#fff !important;}
   pre.salida{background:#f3f0f8; border:1px solid var(--borde); border-radius:8px; padding:12px; font-size:.82rem; white-space:pre-wrap; max-height:300px; overflow:auto; margin-top:10px;}
-  details{margin-top:10px;}
+  details{margin-top:4px;}
   summary{cursor:pointer; color:var(--azul); font-size:.9rem;}
   #revision{display:none;}
   #revision.visible{display:block;}
   .secedit{margin-bottom:8px;}
   .secedit textarea{min-height:52px;}
+  .formreg{background:#faf9fc; border:1px solid var(--borde); border-radius:8px; padding:10px 12px; margin-top:10px;}
+  .formreg .grid{display:grid; grid-template-columns:1fr 1fr; gap:0 12px;}
+  .formreg .grid .ancho{grid-column:1 / -1;}
+  .formreg textarea{min-height:56px;}
+  .adj{font-size:.78rem; color:var(--gris); display:block; margin-top:3px;}
+  .exportar{border-top:1px solid var(--borde); margin-top:14px; padding-top:6px;}
+  @media (max-width:640px){ .formreg .grid{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -68,8 +79,7 @@
       </select>
     </div>
     <div><label>Mes</label><input type="text" id="mes"></div>
-    <div><label>Quién rellena</label><input type="text" id="persona" placeholder="Nombre"></div>
-  </div>
+    <div><label>Quién rellena</label><input type="text" id="persona" placeholder="Nombre y apellido"></div>
   </div>
   <p class="nota" id="zonaCarpeta" hidden>Guardado en OneDrive: <span id="estadoCarpeta">sin conectar</span>
     <button class="btn mini sec" id="btnCarpeta" type="button">Conectar carpeta del grupo (OneDrive)</button>
@@ -78,8 +88,8 @@
 
 <div class="card">
   <div class="paso"><span class="num">1</span><h2>Pega aquí todo lo que tengas, tal cual</h2></div>
-  <p class="nota">Vale cualquier cosa y en cualquier orden: un correo, la referencia de un paper copiada de la revista, un trozo de tu CV, notas de una reunión, un audio dictado. Pega varias cosas seguidas sin ordenarlas. No rellenes nada a mano que ya exista escrito en otro sitio.</p>
-  <textarea id="volcado" placeholder="Ej.: pega aquí el correo de aceptación del paper + la referencia + tus notas del mes..."></textarea>
+  <p class="nota">Vale cualquier cosa y en cualquier orden: un correo, la referencia de un paper, un trozo de tu CV, notas de una reunión, un audio dictado. También transferencia (un cuestionario con su enlace, un curso impartido, una guía, una charla, una noticia), colaboraciones con grupos de fuera y contactos con centros. No rellenes nada a mano que ya exista escrito en otro sitio.</p>
+  <textarea id="volcado" placeholder="Ej.: pega aquí el correo de aceptación del paper + el enlace del cuestionario que hemos publicado + tus notas del mes..."></textarea>
   <button class="btn sec" id="btnDictar">🎙 Dictar</button>
   <span id="msgDictado" class="nota"></span>
 </div>
@@ -98,46 +108,42 @@
   <span id="msgProc" class="exito"></span><span id="errProc" class="error"></span>
 </div>
 
+<div class="card">
+  <div class="paso"><span class="num">+</span><h2>O añádelo a mano</h2></div>
+  <p class="nota">Para lo que no tengas escrito en ningún sitio, o para adjuntar documentos (la publicación, la carta del contrato, el material de un curso…). Los adjuntos se guardan en la carpeta del grupo, en «Material de indicadores» o «Material de transferencia».</p>
+  <button class="btn anadir" data-bloque="ind">+ Indicador</button>
+  <button class="btn anadir" data-bloque="tr">+ Transferencia</button>
+  <button class="btn anadir" data-bloque="col">+ Colaboración externa</button>
+  <button class="btn anadir" data-bloque="con">+ Contacto con un centro</button>
+  <div id="zonaManual"></div>
+</div>
+
 <div class="card" id="revision">
-  <div class="paso"><span class="num">✓</span><h2>Revisa 30 segundos y exporta</h2></div>
-  <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que la IA no encontró en tus notas: complétalo o déjalo para el mes que viene. Puedes editar cualquier texto aquí mismo.</p>
+  <div class="paso"><span class="num">✓</span><h2>Revisa y exporta</h2></div>
+  <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que faltaba: pulsa «Editar» para completarlo ahora o déjalo para el mes que viene. Con «Adjuntar» subes el documento que lo acredita.</p>
   <div id="editSecciones"></div>
   <div id="listaRegs"></div>
-  <button class="btn" id="btnPlantilla">Ver plantilla de reunión</button>
-  <button class="btn" id="btnCopiarPlantilla">Copiar plantilla</button>
-  <button class="btn" id="btnJSON">Descargar JSON (a OneDrive)</button>
-  <button class="btn" id="btnCSV">Descargar CSV de indicadores</button>
+  <div class="exportar">
+    <button class="btn" id="btnJSON">Descargar JSON (a OneDrive)</button>
+    <button class="btn sec" id="btnCSV">CSV de indicadores</button>
+    <button class="btn sec" id="btnXlsxTr">Excel de transferencia</button>
+    <button class="btn sec" id="btnXlsxRed">Excel de colaboraciones y contactos</button>
+    <button class="btn sec" id="btnPlantilla">Ver plantilla de reunión</button>
+    <button class="btn sec" id="btnCopiarPlantilla">Copiar plantilla</button>
+  </div>
   <pre class="salida" id="salida" style="display:none"></pre>
 </div>
 
 <div class="card">
   <details>
-    <summary>Opciones: continuar una sesión anterior, añadir un registro a mano, ayuda</summary>
+    <summary>Opciones: continuar una sesión anterior, consolidar el grupo, ayuda</summary>
     <label style="margin-top:10px">Cargar un JSON guardado (continúa donde lo dejaste)</label>
     <input type="file" id="importJSON" accept=".json">
     <span id="msgImport" class="exito"></span>
-    <label style="margin-top:14px">Consolidar varios JSON en un CSV único (para la gestión de indicadores)</label>
+    <label style="margin-top:14px">Consolidar varios JSON (persona responsable de indicadores): genera el CSV de indicadores, el Excel de transferencia y el de colaboraciones y contactos de todo el grupo</label>
     <input type="file" id="consolidar" accept=".json" multiple>
     <span id="msgCons" class="exito"></span>
-    <div id="manualZona">
-      <label style="margin-top:14px">Añadir un registro a mano (solo si no tienes nada que pegar)</label>
-      <div class="fila">
-        <div>
-          <select id="tipoReg">
-            <option value="publicacion">Publicación</option>
-            <option value="financiacion">Financiación</option>
-            <option value="tesis">Tesis</option>
-            <option value="contrato_personal">Contrato pre/posdoctoral</option>
-            <option value="congreso">Congreso</option>
-            <option value="difusion">Difusión</option>
-          </select>
-        </div>
-      </div>
-      <div id="formReg"></div>
-      <button class="btn mini" id="btnAddReg">Añadir</button>
-      <span id="msgReg" class="exito"></span>
-    </div>
-    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa y exporta, como mínimo 24 horas antes de la reunión. El JSON se guarda en la carpeta compartida de OneDrive (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json); el CSV alimenta el informe anual. Con "Conectar carpeta del grupo" el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos (OneDrive los sube al grupo). Nada sale de tu navegador. La persona responsable de indicadores puede seleccionar varios JSON a la vez en "Consolidar" y obtener un único CSV con todos los registros del grupo.</p>
+    <p class="nota" style="margin-top:12px">Cómo funciona: 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa, adjunta y exporta, como mínimo 24 horas antes de la reunión. El JSON se guarda en la carpeta del grupo (nombre tipo QUALIKER_L4_septiembre-2026_Apellido.json). Con «Conectar carpeta del grupo» el guardado es directo: eliges una vez tu carpeta sincronizada de OneDrive y los archivos se escriben ahí solos; los adjuntos van a las subcarpetas «Material de indicadores» y «Material de transferencia», que la app crea si no existen. La app no envía nada a ningún servidor; lo que pegas en tu chatbot sí pasa por ese servicio.</p>
   </details>
 </div>
 </main>
@@ -153,19 +159,95 @@ const estado = { actualizacion: { avances: "", proximo: "", peticiones: "" }, re
   document.getElementById("mes").value = meses[d.getMonth()] + " " + d.getFullYear();
 })();
 
-const CAMPOS = {
-  publicacion: [["autores","Autores/as (orden de firma)"],["titulo","Título"],["tipo_pub","Tipo (artículo indexado / libro / capítulo / otras)"],["estado","Estado (en preparación / enviada / aceptada / publicada)"],["base","Base de datos"],["cuartil","Cuartil"],["anio","Año"],["referencia","Referencia completa"],["revista","Revista/editorial"],["issn","ISSN/ISBN"],["doi","DOI"],["coautoria","Coautoría entre miembros (Sí/No)"],["miembros","Miembros que firman"],["acreditacion","PDF de acreditación"]],
-  financiacion: [["tipo_fin","Tipo (competitiva/contrato/convenio/otros)"],["titulo","Título"],["entidad","Entidad"],["convocatoria","Convocatoria"],["ip","IP/responsable"],["importe","Importe (€)"],["estado","Estado"],["inicio","Inicio"],["fin","Fin"]],
-  tesis: [["doctorando","Doctorando/a"],["titulo","Título"],["direccion","Dirección"],["estado","Estado (en curso/defendida)"],["internacional","Mención internacional (Sí/No)"],["anio","Año defensa"]],
-  contrato_personal: [["persona","Persona"],["tipo_con","Tipo (pre/posdoctoral)"],["fuente","Fuente de financiación"],["inicio","Inicio"],["fin","Fin"]],
-  congreso: [["autores","Autores/as"],["titulo","Título"],["congreso","Congreso"],["tipo_c","Tipo"],["fecha","Fecha"],["lugar","Lugar"]],
-  difusion: [["actividad","Actividad"],["publico","Público"],["fecha","Fecha"],["alcance","Alcance medido"]]
+/* ---------- catálogo de registros ---------- */
+const AMBITOS = ["Local/autonómico (Euskadi)", "Estatal", "Internacional"];
+const TIPO_ENTIDAD = ["Universidad o centro de investigación", "Hospital o servicio sanitario", "Administración pública", "Centro educativo", "Asociación, fundación u ONG", "Empresa", "Otra"];
+const SUBTIPOS_TR = [
+  "Cuestionario o instrumento de evaluación",
+  "Curso o formación impartida",
+  "Guía, manual o protocolo",
+  "Programa o intervención implantada en una entidad",
+  "App, software o herramienta digital",
+  "Informe técnico o asesoramiento",
+  "Comité, grupo de expertos o normativa",
+  "Charla, taller o jornada",
+  "Divulgación en medios",
+  "Material divulgativo (vídeo, infografía, web)",
+  "Datos o materiales en abierto",
+  "Propiedad intelectual (registro, patente, marca)",
+  "Evento organizado por el grupo",
+  "Otra"
+];
+const TIPOS_COLAB = ["Coautoría de publicaciones", "Proyecto conjunto (solicitado o concedido)", "Convenio o acuerdo formal", "Estancia de investigación saliente", "Estancia de investigación entrante", "Codirección de tesis", "Red, consorcio o grupo de trabajo", "Carta de apoyo", "Organización conjunta de actividades", "Acceso a muestra, datos o instalaciones", "Docencia o formación conjunta", "Otra"];
+const MOTIVOS = ["Reclutamiento o acceso a participantes", "Implantación de un programa o intervención", "Convenio o acuerdo", "Formación", "Difusión de resultados", "Solicitud de datos o información", "Carta de apoyo para una solicitud", "Otro"];
+const RESULTADOS = ["Colaboró", "Colaboración en curso", "No colaboró", "Sin respuesta", "Pendiente"];
+
+/* campo: [id, etiqueta, opciones] · opciones: {op:[...], largo, link, solo:[prefijos de subtipo]} */
+const TIPOS = {
+  publicacion: { etiq: "Publicación", bloque: "ind", campos: [
+    ["autores","Autores/as (orden de firma)",{ancho:1}],["titulo","Título",{ancho:1}],
+    ["tipo_pub","Tipo",{op:["Artículo indexado","Libro","Capítulo","Otras"]}],["estado","Estado",{op:["En preparación","Enviada","Aceptada","Publicada"]}],
+    ["revista","Revista o editorial"],["anio","Año"],["base","Base de datos"],["cuartil","Cuartil"],
+    ["issn","ISSN/ISBN"],["doi","DOI",{link:1}],["referencia","Referencia completa",{largo:1}],
+    ["coautoria","Coautoría entre miembros",{op:["Sí","No"]}],["miembros","Miembros que firman"],["acreditacion","Acreditación (enlace o «adjunto»)"]]},
+  tesis: { etiq: "Tesis", bloque: "ind", campos: [
+    ["doctorando","Doctorando/a"],["direccion","Dirección"],["titulo","Título",{ancho:1}],
+    ["estado","Estado",{op:["En curso","Defendida"]}],["internacional","Mención internacional",{op:["Sí","No"]}],["anio","Año de defensa"]]},
+  contrato_personal: { etiq: "Contrato de personal", bloque: "ind", campos: [
+    ["persona","Persona"],["tipo_con","Tipo",{op:["Predoctoral","Posdoctoral","Técnico/a de investigación","Otro"]}],
+    ["fuente","Fuente de financiación"],["inicio","Inicio"],["fin","Fin"]]},
+  financiacion: { etiq: "Financiación", bloque: "ind", campos: [
+    ["titulo","Título del proyecto, contrato o convenio",{ancho:1}],["tipo_fin","Tipo",{op:["Competitiva","Contrato con entidad","Convenio","Otros"]}],
+    ["convocatoria","Convocatoria"],["entidad","Entidad financiadora"],["ip","IP o responsable"],["importe","Importe (€)"],
+    ["estado","Estado",{op:["Solicitada","Concedida","Denegada","Finalizada"]}],["inicio","Inicio"],["fin","Fin"]]},
+  congreso: { etiq: "Congreso", bloque: "ind", campos: [
+    ["autores","Autores/as",{ancho:1}],["titulo","Título",{ancho:1}],["congreso","Congreso"],["tipo_c","Tipo",{op:["Comunicación oral","Póster","Simposio","Conferencia invitada"]}],
+    ["fecha","Fecha"],["lugar","Lugar"]]},
+  transferencia: { etiq: "Transferencia", bloque: "tr", campos: [
+    ["subtipo","Tipo de transferencia",{op:SUBTIPOS_TR,ancho:1}],
+    ["otro_tipo","¿Cuál?",{solo:["Otra"],ancho:1}],
+    ["titulo","Título o nombre",{ancho:1}],
+    ["descripcion","Descripción breve (1-2 frases; sirve para la web)",{largo:1}],
+    ["destinatarios","Destinatarios (profesionales, profesorado, familias, pacientes, administración, población general…)",{ancho:1}],
+    ["entidad","Entidad colaboradora o receptora"],["ambito","Ámbito",{op:AMBITOS}],
+    ["fecha","Fecha o inicio"],["fecha_fin","Fin (si dura en el tiempo)"],
+    ["modalidad","Modalidad",{op:["Presencial","En línea","Mixta"],solo:["Curso","Charla","Evento"]}],
+    ["horas","Horas de formación",{solo:["Curso"]}],
+    ["participantes","Participantes, asistentes o alcance",{solo:["Curso","Charla","Evento","Divulgación","Material divulgativo","Programa"]}],
+    ["enlace","Enlace de acceso (cuestionario, material, noticia, repositorio…)",{link:1,ancho:1}],
+    ["acceso","Acceso",{op:["Abierto","Bajo petición","Restringido"]}],["idioma","Idioma(s)"],
+    ["material","Material de la formación o del producto (enlace; o adjúntalo)",{link:1,ancho:1,solo:["Curso","Charla","Evento","Guía","Programa","Material divulgativo"]}],
+    ["licencia","Licencia o nº de registro (p. ej., CC BY)",{solo:["Cuestionario","App","Datos","Propiedad","Guía"]}],
+    ["miembros","Miembros de QUALIKER implicados"],["proyecto","Proyecto o financiación de la que deriva"],
+    ["web","¿Se publica en la web del grupo?",{op:["Sí","No","Pendiente de decidir"]}]]},
+  colaboracion_externa: { etiq: "Colaboración externa", bloque: "col", campos: [
+    ["entidad","Centro o institución",{ancho:1}],["grupo","Grupo o persona de referencia"],["tipo_entidad","Tipo de entidad",{op:TIPO_ENTIDAD}],
+    ["ciudad","Ciudad"],["pais","País"],["ambito","Ámbito",{op:AMBITOS}],
+    ["tipo_colab","Tipo de colaboración",{op:TIPOS_COLAB}],["proyecto","Proyecto, estudio o línea"],["miembros","Miembros de QUALIKER implicados"],
+    ["inicio","Inicio"],["fin","Fin"],["estado","Estado",{op:["En negociación","Activa","Finalizada"]}],
+    ["resultado","Resultado o producto (publicación, proyecto, estancia…)",{largo:1}],["evidencia","Enlace a la evidencia (convenio, carta, web)",{link:1,ancho:1}]]},
+  contacto_centro: { etiq: "Contacto con un centro", bloque: "con", campos: [
+    ["centro","Centro o entidad contactada",{ancho:1}],["tipo_entidad","Tipo de entidad",{op:TIPO_ENTIDAD}],["ambito","Ámbito",{op:AMBITOS}],
+    ["ciudad","Ciudad"],["pais","País"],
+    ["persona","Persona de contacto y cargo"],["contacto","Correo o teléfono institucional"],
+    ["fecha","Fecha del contacto"],["quien","Quién contactó desde QUALIKER"],
+    ["proyecto","Proyecto o estudio"],["motivo","Motivo del contacto",{op:MOTIVOS}],
+    ["resultado","Resultado",{op:RESULTADOS}],
+    ["detalle","En qué colaboró, o por qué no",{largo:1}],
+    ["observaciones","Observaciones para la próxima vez (condiciones, a quién dirigirse, cuándo volver)",{largo:1}]]}
 };
-const ETIQ = {publicacion:"Publicación", financiacion:"Financiación", tesis:"Tesis", contrato_personal:"Contrato personal", congreso:"Congreso", difusion:"Difusión"};
+const BLOQUES = { ind: "Indicadores", tr: "Transferencia", col: "Colaboraciones externas", con: "Contactos con centros" };
+const CARPETA_MATERIAL = { ind: "Material de indicadores", tr: "Material de transferencia", col: "Material de indicadores", con: "Material de indicadores" };
 const SECS = [["avances","1 · Logros y avances del mes"],["proximo","2 · Próximo mes"],["peticiones","3 · Sinergias consolidadas (con quién, qué y contraprestación pactada)"]];
 
 function val(id){ return (document.getElementById(id) || {}).value || ""; }
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function escapeHtml(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function campoVisible(tipo, def, valores){
+  const o = def[2] || {};
+  if (!o.solo) return true;
+  const st = String((valores && valores.subtipo) || "");
+  return o.solo.some(p => st.startsWith(p));
+}
 
 /* ---------- dictado ---------- */
 let rec = null, grabando = false;
@@ -190,9 +272,8 @@ document.getElementById("btnDictar").addEventListener("click", () => {
   const area = document.getElementById("volcado");
   rec.onresult = e => { for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) area.value += (area.value ? " " : "") + e.results[i][0].transcript.trim(); };
   rec.onend = () => {
-    /* Chrome corta solo tras unos segundos de silencio: si no has pulsado Parar, retomamos */
     if (grabando) { try { rec.start(); return; } catch (e) {} }
-    pararDictado(); if (!msg.textContent.startsWith("Micrófono") ) msg.textContent = "";
+    pararDictado(); if (!msg.textContent.startsWith("Micrófono")) msg.textContent = "";
   };
   rec.onerror = ev => {
     const t = ERRMIC[ev.error];
@@ -206,12 +287,21 @@ document.getElementById("btnDictar").addEventListener("click", () => {
 });
 
 /* ---------- prompt ---------- */
+function describirTipos(){
+  return Object.entries(TIPOS).map(([t, def]) => {
+    const campos = def.campos.map(([id, lab, o]) => (o && o.op) ? `${id} (una de: ${o.op.join(" | ")})` : id).join(", ");
+    return `- ${t}: ${campos}`;
+  }).join("\n");
+}
 function promptAgente(){
-  return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas copiadas de revistas o de un CV, notas sueltas o transcripciones de audio.
+  return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas, notas sueltas o transcripciones de audio.
 
 Tu tarea, sin inventar absolutamente nada:
-1. Ordena el contenido en tres apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, peticiones (SOLO colaboraciones entre líneas o subequipos YA cerradas: con quién, en qué y con qué contraprestación pactada, p. ej. coautoría). Importante: las peticiones de ayuda sin acuerdo cerrado y las propuestas de temas para reuniones NO forman parte de la actualización escrita (se tratan en la reunión o en el subequipo): no las incluyas en ningún apartado. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
-2. Crea un registro por cada indicador que detectes, aunque venga a medias: publicaciones (campos: autores, titulo, tipo_pub, estado, base, cuartil, anio, referencia, revista, issn, doi, coautoria, miembros, acreditacion), financiacion (tipo_fin, titulo, entidad, convocatoria, ip, importe, estado, inicio, fin), tesis (doctorando, titulo, direccion, estado, internacional, anio), contrato_personal (persona, tipo_con, fuente, inicio, fin), congreso (autores, titulo, congreso, tipo_c, fecha, lugar), difusion (actividad, publico, fecha, alcance). Si una referencia bibliográfica trae DOI, revista o año, extráelos. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
+1. Ordena el contenido en tres apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, peticiones (SOLO colaboraciones entre líneas o subequipos del propio grupo YA cerradas: con quién, en qué y con qué contraprestación pactada). Las peticiones de ayuda sin acuerdo cerrado y las propuestas de temas para reuniones NO van en ningún apartado. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
+2. Crea un registro por cada elemento que detectes, aunque venga a medias, con estos tipos y campos:
+${describirTipos()}
+   Criterios: publicacion, tesis, contrato_personal, financiacion y congreso son indicadores del informe. transferencia es todo lo que el grupo pone al servicio de la sociedad o de profesionales: cuestionarios o instrumentos (con su enlace), cursos y formaciones (con horas y material), guías, protocolos, programas implantados, apps, informes o asesoramiento, comités, charlas, apariciones en medios, materiales divulgativos, datos abiertos, registros de propiedad intelectual y eventos. colaboracion_externa es una colaboración establecida con un grupo o institución de fuera de QUALIKER. contacto_centro es cada contacto con un centro o entidad, haya colaborado o no, indicando para qué se contactó y en qué quedó.
+   En los campos con opciones usa exactamente una de ellas. ambito: "Local/autonómico (Euskadi)", "Estatal" (resto de España) o "Internacional". País y ámbito solo pueden deducirse si el nombre del centro o la ciudad no dejan lugar a dudas. En coautoria pon "Sí" solo si firman dos o más miembros del grupo y lístalos en miembros.
 3. Todo dato que NO esté en el volcado se rellena exactamente con "[VERIFICAR]". Nunca lo completes por conocimiento propio.
 4. Responde SOLO con un bloque JSON válido, sin texto antes ni después:
 {"linea":"${val("linea")}","mes":"${val("mes")}","persona":"${val("persona")}","actualizacion":{"avances":"","proximo":"","peticiones":""},"registros":[{"tipo":"publicacion","autores":"...","titulo":"..."}]}
@@ -221,10 +311,11 @@ VOLCADO:
 }
 document.getElementById("btnCopiarPrompt").addEventListener("click", () => {
   const texto = promptAgente() + (val("volcado") || "[no hay volcado: pega antes tus notas en el paso 1]");
+  const msg = document.getElementById("msgPrompt");
   navigator.clipboard.writeText(texto).then(() => {
-    document.getElementById("msgPrompt").textContent = "Copiado. Pégalo en tu chatbot y trae su respuesta.";
-    setTimeout(() => document.getElementById("msgPrompt").textContent = "", 4000);
-  });
+    msg.textContent = "Copiado. Pégalo en tu chatbot y trae su respuesta.";
+    setTimeout(() => msg.textContent = "", 4000);
+  }).catch(() => { msg.textContent = "No se pudo copiar: revisa los permisos del navegador."; });
 });
 
 /* ---------- procesar respuesta IA ---------- */
@@ -234,28 +325,54 @@ function extraerJSON(texto){
   if (ini < 0 || fin <= ini) throw new Error("no-json");
   return JSON.parse(t.slice(ini, fin + 1));
 }
+function normalizarRegistro(g){
+  if (!g || !g.tipo) return null;
+  if (g.tipo === "difusion") {  /* versiones anteriores: difusión pasa a transferencia */
+    g = { tipo: "transferencia", subtipo: "Divulgación en medios", titulo: g.actividad || "", destinatarios: g.publico || "", fecha: g.fecha || "", participantes: g.alcance || "", adjuntos: g.adjuntos || [] };
+  }
+  if (!TIPOS[g.tipo]) return null;
+  if (!Array.isArray(g.adjuntos)) g.adjuntos = [];
+  return g;
+}
+function mostrarRevision(){ document.getElementById("revision").classList.add("visible"); }
 document.getElementById("btnProcesar").addEventListener("click", () => {
   const ok = document.getElementById("msgProc"), err = document.getElementById("errProc");
   ok.textContent = ""; err.textContent = "";
   try {
     const d = extraerJSON(val("respuesta"));
-    cargarDatos(d);
+    cargarDatos(d, true);
     ok.textContent = "Listo: revisa abajo y exporta.";
-    document.getElementById("revision").classList.add("visible");
+    mostrarRevision();
     document.getElementById("revision").scrollIntoView({ behavior: "smooth" });
   } catch (e) {
     err.textContent = "No encuentro un bloque JSON válido en lo pegado. Pega la respuesta completa del chatbot.";
   }
 });
-function cargarDatos(d){
+function cargarDatos(d, sumar){
   if (d.linea) { const s = document.getElementById("linea"); [...s.options].forEach(o => { if (o.value === d.linea || o.textContent.startsWith(d.linea)) s.value = o.value; }); }
   if (d.mes) document.getElementById("mes").value = d.mes;
   if (d.persona) document.getElementById("persona").value = d.persona;
-  if (d.actualizacion) SECS.forEach(([k]) => { estado.actualizacion[k] = d.actualizacion[k] || ""; });
-  estado.registros = Array.isArray(d.registros) ? d.registros.filter(x => x && x.tipo && CAMPOS[x.tipo]) : [];
+  if (d.actualizacion) SECS.forEach(([k]) => {
+    const nuevo = d.actualizacion[k] || "";
+    estado.actualizacion[k] = (sumar && estado.actualizacion[k] && nuevo) ? estado.actualizacion[k] + "\n" + nuevo : (nuevo || (sumar ? estado.actualizacion[k] : ""));
+  });
+  const regs = (Array.isArray(d.registros) ? d.registros : []).map(normalizarRegistro).filter(Boolean);
+  estado.registros = sumar ? estado.registros.concat(regs) : regs;
   pintarRevision();
 }
 function marcarVerificar(s){ return escapeHtml(s).replace(/\[VERIFICAR\]/g, '<span class="verificar">[VERIFICAR]</span>'); }
+function resumenRegistro(g){
+  const corto = s => String(s || "").split(/[(,]/)[0].trim();
+  switch (g.tipo) {
+    case "tesis": return [g.doctorando, g.titulo].filter(Boolean).join(" · ");
+    case "contrato_personal": return [g.persona, g.tipo_con].filter(Boolean).join(" · ");
+    case "transferencia": return [corto(g.subtipo), g.titulo].filter(Boolean).join(" · ");
+    case "colaboracion_externa": return [g.entidad, g.pais, g.tipo_colab].filter(Boolean).join(" · ");
+    case "contacto_centro": return [g.centro, g.motivo, g.resultado].filter(Boolean).join(" · ");
+    default: return g.titulo || "";
+  }
+}
+let editando = -1;
 function pintarRevision(){
   const cont = document.getElementById("editSecciones");
   cont.innerHTML = "";
@@ -267,32 +384,116 @@ function pintarRevision(){
     div.appendChild(ta); cont.appendChild(div);
   });
   const lr = document.getElementById("listaRegs");
-  if (!estado.registros.length) { lr.innerHTML = '<p class="nota">Sin indicadores nuevos este mes.</p>'; return; }
-  let html = "<table><tr><th>#</th><th>Tipo</th><th>Resumen</th><th></th></tr>";
-  estado.registros.forEach((g, i) => {
-    const res = [g.titulo, g.actividad, g.persona, g.doctorando].find(Boolean) || "(sin título)";
-    const extra = (g.coautoria || "").toLowerCase().startsWith("s") ? ' <span class="pill">coautoría interna</span>' : "";
-    const pend = Object.values(g).some(v => String(v).includes("[VERIFICAR]")) ? ' <span class="verificar">[VERIFICAR]</span>' : "";
-    html += `<tr><td>${i+1}</td><td>${ETIQ[g.tipo]}</td><td>${marcarVerificar(res)}${extra}${pend}</td><td><button class="btn mini rojo" onclick="borrarReg(${i})">Quitar</button></td></tr>`;
-  });
-  lr.innerHTML = html + "</table>";
-}
-window.borrarReg = i => { estado.registros.splice(i, 1); pintarRevision(); };
-
-/* ---------- salida ---------- */
-function plantillaTexto(){
-  const secc = (t, v) => t + "\n" + ((v || "").trim() ? v.trim().split(/\n+/).map(x => "  – " + x.trim()).join("\n") : "  – (nada este mes)") + "\n\n";
-  let t = `ACTUALIZACIÓN MENSUAL · ${val("linea")} · ${val("mes")}\nRellena: ${val("persona")}\n${"".padEnd(60, "=")}\n\n`;
-  SECS.forEach(([k, titulo]) => { t += secc(titulo.toUpperCase(), estado.actualizacion[k]); });
-  if (estado.registros.length) {
-    t += "6 · INDICADORES NUEVOS ESTE MES\n";
-    estado.registros.forEach((g, i) => {
-      const campos = CAMPOS[g.tipo].map(([id, lab]) => g[id] ? `${lab}: ${g[id]}` : null).filter(Boolean).join(" | ");
-      t += `  ${i+1}. [${ETIQ[g.tipo]}] ${campos}\n`;
+  lr.innerHTML = "";
+  if (!estado.registros.length) { lr.innerHTML = '<p class="nota">Sin registros nuevos este mes.</p>'; return; }
+  Object.entries(BLOQUES).forEach(([b, nombre]) => {
+    const idx = estado.registros.map((g, i) => [g, i]).filter(([g]) => TIPOS[g.tipo].bloque === b);
+    if (!idx.length) return;
+    const h = document.createElement("h3"); h.textContent = nombre + " (" + idx.length + ")"; lr.appendChild(h);
+    const tabla = document.createElement("table");
+    tabla.innerHTML = "<tr><th>Tipo</th><th>Resumen</th><th>Adjuntos</th><th></th></tr>";
+    idx.forEach(([g, i]) => {
+      const tr = document.createElement("tr");
+      const extra = (String(g.coautoria || "").toLowerCase().startsWith("s")) ? ' <span class="pill">coautoría interna</span>' : "";
+      const pend = Object.values(g).some(v => typeof v === "string" && v.includes("[VERIFICAR]")) ? ' <span class="verificar">[VERIFICAR]</span>' : "";
+      const adj = (g.adjuntos || []).map(a => `<span class="adj">📎 ${escapeHtml(a.nombre)}${a.estado !== "guardado" ? " · " + escapeHtml(a.estado) : ""}</span>`).join("") || '<span class="adj">—</span>';
+      tr.innerHTML = `<td>${TIPOS[g.tipo].etiq}</td><td>${marcarVerificar(resumenRegistro(g) || "(sin título)")}${extra}${pend}</td><td>${adj}</td>
+        <td class="acc"><button class="btn mini sec" data-acc="editar" data-i="${i}">Editar</button><button class="btn mini sec" data-acc="adjuntar" data-i="${i}">Adjuntar</button><button class="btn mini rojo" data-acc="quitar" data-i="${i}">Quitar</button></td>`;
+      tabla.appendChild(tr);
+      if (editando === i) {
+        const fe = document.createElement("tr"); const td = document.createElement("td"); td.colSpan = 4; fe.appendChild(td);
+        const f = crearFormulario(g.tipo, g, (datos) => { Object.assign(g, datos); editando = -1; pintarRevision(); }, () => { editando = -1; pintarRevision(); }, "Guardar cambios", false);
+        td.appendChild(f); tabla.appendChild(fe);
+      }
     });
-  }
-  return t;
+    lr.appendChild(tabla);
+  });
 }
+document.getElementById("listaRegs").addEventListener("click", ev => {
+  const b = ev.target.closest("button[data-acc]"); if (!b) return;
+  const i = +b.dataset.i;
+  if (b.dataset.acc === "quitar") { estado.registros.splice(i, 1); if (editando === i) editando = -1; pintarRevision(); }
+  else if (b.dataset.acc === "editar") { editando = (editando === i ? -1 : i); pintarRevision(); }
+  else if (b.dataset.acc === "adjuntar") {
+    const inp = document.createElement("input"); inp.type = "file"; inp.multiple = true;
+    inp.addEventListener("change", async () => { await adjuntarArchivos(estado.registros[i], [...inp.files]); pintarRevision(); });
+    inp.click();
+  }
+});
+
+/* ---------- formularios (añadir a mano y editar) ---------- */
+function crearFormulario(tipoInicial, valores, alGuardar, alCancelar, textoBoton, conAdjuntos){
+  const caja = document.createElement("div"); caja.className = "formreg";
+  const datos = Object.assign({}, valores || {});
+  let tipo = tipoInicial;
+  function pintar(){
+    caja.innerHTML = "";
+    if (TIPOS[tipo].bloque === "ind" && !valores) {
+      const l = document.createElement("label"); l.textContent = "¿Qué indicador?"; caja.appendChild(l);
+      const s = document.createElement("select");
+      Object.entries(TIPOS).filter(([, d]) => d.bloque === "ind").forEach(([t, d]) => { const o = document.createElement("option"); o.value = t; o.textContent = d.etiq; if (t === tipo) o.selected = true; s.appendChild(o); });
+      s.addEventListener("change", () => { tipo = s.value; pintar(); });
+      caja.appendChild(s);
+    }
+    const grid = document.createElement("div"); grid.className = "grid"; caja.appendChild(grid);
+    TIPOS[tipo].campos.forEach(def => {
+      const [id, lab, o = {}] = def;
+      if (!campoVisible(tipo, def, datos)) return;
+      const w = document.createElement("div"); if (o.ancho || o.largo) w.className = "ancho";
+      const l = document.createElement("label"); l.textContent = lab; w.appendChild(l);
+      let el;
+      if (o.op) {
+        el = document.createElement("select");
+        const vacio = document.createElement("option"); vacio.value = ""; vacio.textContent = "—"; el.appendChild(vacio);
+        const actual = datos[id] || "";
+        const ops = o.op.includes(actual) || !actual ? o.op : o.op.concat([actual]);
+        ops.forEach(v => { const op = document.createElement("option"); op.value = v; op.textContent = v; if (v === actual) op.selected = true; el.appendChild(op); });
+      } else if (o.largo) { el = document.createElement("textarea"); el.value = datos[id] || ""; }
+      else { el = document.createElement("input"); el.type = "text"; el.value = datos[id] || ""; if (o.link) el.placeholder = "https://…"; }
+      el.dataset.campo = id;
+      el.addEventListener(o.op ? "change" : "input", () => { datos[id] = el.value; if (id === "subtipo") pintar(); });
+      w.appendChild(el); grid.appendChild(w);
+    });
+    let inpAdj = null;
+    if (conAdjuntos) {
+      const l = document.createElement("label"); l.textContent = "Adjuntar documentos (irán a «" + CARPETA_MATERIAL[TIPOS[tipo].bloque] + "»)"; caja.appendChild(l);
+      inpAdj = document.createElement("input"); inpAdj.type = "file"; inpAdj.multiple = true; caja.appendChild(inpAdj);
+    }
+    const bOk = document.createElement("button"); bOk.className = "btn mini"; bOk.textContent = textoBoton;
+    const msg = document.createElement("span"); msg.className = "exito";
+    bOk.addEventListener("click", async () => {
+      const limpio = { tipo };
+      TIPOS[tipo].campos.forEach(def => { const id = def[0]; if (campoVisible(tipo, def, datos) && String(datos[id] || "").trim()) limpio[id] = String(datos[id]).trim(); });
+      const vacio = Object.keys(limpio).length === 1 && !(inpAdj && inpAdj.files.length);
+      if (vacio) { msg.textContent = "Está vacío."; return; }
+      limpio.adjuntos = (valores && valores.adjuntos) || [];
+      if (inpAdj && inpAdj.files.length) await adjuntarArchivos(limpio, [...inpAdj.files]);
+      alGuardar(limpio);
+    });
+    caja.appendChild(bOk);
+    if (alCancelar) { const bC = document.createElement("button"); bC.className = "btn mini sec"; bC.textContent = "Cancelar"; bC.addEventListener("click", alCancelar); caja.appendChild(bC); }
+    caja.appendChild(msg);
+  }
+  pintar();
+  return caja;
+}
+document.querySelectorAll("button.anadir").forEach(b => b.addEventListener("click", () => {
+  const zona = document.getElementById("zonaManual");
+  const activo = b.classList.contains("activo");
+  document.querySelectorAll("button.anadir").forEach(x => x.classList.remove("activo"));
+  zona.innerHTML = "";
+  if (activo) return;
+  b.classList.add("activo");
+  const tipoIni = { ind: "publicacion", tr: "transferencia", col: "colaboracion_externa", con: "contacto_centro" }[b.dataset.bloque];
+  const f = crearFormulario(tipoIni, null, (datos) => {
+    estado.registros.push(datos);
+    mostrarRevision(); pintarRevision();
+    zona.innerHTML = '<p class="exito" style="margin:10px 0 0">Añadido. Aparece abajo, en «Revisa y exporta».</p>';
+    document.querySelectorAll("button.anadir").forEach(x => x.classList.remove("activo"));
+  }, null, "Añadir", true);
+  zona.appendChild(f);
+}));
+
 /* ---------- carpeta del grupo (guardado directo en OneDrive sincronizado) ---------- */
 let esVentanaPrincipal = true; try { esVentanaPrincipal = (window.self === window.top); } catch (e) { esVentanaPrincipal = false; }
 let carpeta = null;
@@ -313,76 +514,107 @@ async function conectarCarpeta(){
     setTimeout(() => msg.textContent = "", 4000);
   } catch (e) { /* cancelado */ }
 }
-if (document.getElementById("btnCarpeta")) {
-  if (("showDirectoryPicker" in window) && esVentanaPrincipal) {
-    document.getElementById("zonaCarpeta").hidden = false;
-    document.getElementById("btnCarpeta").addEventListener("click", async () => {
-      /* si hay handle guardado con permiso pendiente, un clic lo reactiva sin volver a elegir */
-      if (carpeta) {
-        try {
-          if (await carpeta.requestPermission({ mode: "readwrite" }) === "granted") {
-            estadoCarpeta("conectada: " + carpeta.name); return;
-          }
-        } catch (e) {}
-      }
-      conectarCarpeta();
+if (("showDirectoryPicker" in window) && esVentanaPrincipal) {
+  document.getElementById("zonaCarpeta").hidden = false;
+  document.getElementById("btnCarpeta").addEventListener("click", async () => {
+    if (carpeta) {
+      try { if (await carpeta.requestPermission({ mode: "readwrite" }) === "granted") { estadoCarpeta("conectada: " + carpeta.name); return; } } catch (e) {}
+    }
+    conectarCarpeta();
+  });
+  try {
+    idb("readonly", st => {
+      const g = st.get("carpeta");
+      g.onsuccess = async () => {
+        const h = g.result; if (!h) return;
+        carpeta = h;
+        try { const p = await h.queryPermission({ mode: "readwrite" }); estadoCarpeta(p === "granted" ? "conectada: " + h.name : h.name + " (pulsa el botón para reactivar)"); } catch (e) {}
+      };
     });
-    try {
-      idb("readonly", st => {
-        const g = st.get("carpeta");
-        g.onsuccess = async () => {
-          const h = g.result; if (!h) return;
-          carpeta = h;
-          try {
-            const p = await h.queryPermission({ mode: "readwrite" });
-            estadoCarpeta(p === "granted" ? "conectada: " + h.name : h.name + " (pulsa el botón para reactivar)");
-          } catch (e) {}
-        };
-      });
-    } catch (e) {}
-  }
+  } catch (e) {}
 }
-async function guardarEnCarpeta(nombre, contenido){
+async function permisoCarpeta(){
   if (!carpeta) return false;
   try {
-    if (await carpeta.queryPermission({ mode: "readwrite" }) !== "granted" &&
-        await carpeta.requestPermission({ mode: "readwrite" }) !== "granted") return false;
-    const fh = await carpeta.getFileHandle(nombre, { create: true });
+    if (await carpeta.queryPermission({ mode: "readwrite" }) === "granted") return true;
+    return await carpeta.requestPermission({ mode: "readwrite" }) === "granted";
+  } catch (e) { return false; }
+}
+async function guardarEnCarpeta(nombre, contenido, subcarpeta){
+  if (!(await permisoCarpeta())) return false;
+  try {
+    const dir = subcarpeta ? await carpeta.getDirectoryHandle(subcarpeta, { create: true }) : carpeta;
+    const fh = await dir.getFileHandle(nombre, { create: true });
     const w = await fh.createWritable();
     await w.write(contenido); await w.close();
-    const s = document.getElementById("salida");
-    s.style.display = "block";
-    s.textContent = "Guardado en la carpeta del grupo (" + carpeta.name + "): " + nombre;
+    avisoSalida("Guardado en la carpeta del grupo (" + carpeta.name + (subcarpeta ? " / " + subcarpeta : "") + "): " + nombre);
     return true;
   } catch (e) { return false; }
 }
-async function descargar(nombre, contenido, tipo){
+function avisoSalida(t){ const s = document.getElementById("salida"); s.style.display = "block"; s.textContent = t; }
+async function descargar(nombre, contenido, tipo, subcarpeta){
   /* 1) directo a la carpeta OneDrive conectada · 2) entrega de la versión web · 3) descarga clásica */
-  if (await guardarEnCarpeta(nombre, contenido)) return;
+  if (await guardarEnCarpeta(nombre, contenido, subcarpeta)) return "guardado";
+  const blob = contenido instanceof Blob ? contenido : new Blob([contenido], { type: tipo });
   if (window.claude && typeof window.claude.use === "function") {
     try {
       const d = await window.claude.use("downloads");
       if (d) {
-        try { await d.save({ filename: nombre, data: contenido }); }
-        catch (err) { if (err && err.code !== "declined") alert("No se pudo guardar el archivo: " + (err.message || err.code || err)); }
-        return;
+        try { await d.save({ filename: nombre, data: blob }); return "descargado"; }
+        catch (err) { if (err && err.code !== "declined") alert("No se pudo guardar el archivo: " + (err.message || err.code || err)); return "no guardado"; }
       }
     } catch (e) { /* sigue con la descarga clásica */ }
   }
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([contenido], {type: tipo}));
-  a.download = nombre; a.click(); URL.revokeObjectURL(a.href);
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  return "descargado";
 }
+function slug(s, max){ return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, max || 40); }
 function nombreBase(){
   const l = (val("linea").match(/Línea (\d)/) || [,"X"])[1];
   return `QUALIKER_L${l}_${(val("mes") || "mes").replace(/\s+/g, "-")}_${val("persona").split(/\s+/)[0] || "persona"}`;
 }
-document.getElementById("btnPlantilla").addEventListener("click", () => { const s = document.getElementById("salida"); s.style.display = "block"; s.textContent = plantillaTexto(); });
-document.getElementById("btnCopiarPlantilla").addEventListener("click", () => { navigator.clipboard.writeText(plantillaTexto()).then(() => { const s = document.getElementById("salida"); s.style.display = "block"; s.textContent = plantillaTexto() + "\n[Copiado al portapapeles]"; }); });
+async function adjuntarArchivos(reg, files){
+  const bloque = TIPOS[reg.tipo].bloque, sub = CARPETA_MATERIAL[bloque];
+  const l = (val("linea").match(/Línea (\d)/) || [,"X"])[1];
+  reg.adjuntos = reg.adjuntos || [];
+  for (const f of files) {
+    const nombre = [`L${l}`, slug(val("mes"), 20), slug(TIPOS[reg.tipo].etiq, 20), slug(reg.titulo || reg.entidad || reg.centro || reg.doctorando || reg.persona || "", 40), f.name.replace(/[\\/:*?"<>|]/g, "_")].filter(Boolean).join("_");
+    const res = await descargar(nombre, f, f.type || "application/octet-stream", sub);
+    reg.adjuntos.push({ nombre, carpeta: sub, original: f.name, estado: res === "guardado" ? "guardado" : (res === "descargado" ? "descargado: muévelo a «" + sub + "»" : "no guardado") });
+  }
+  avisoSalida(reg.adjuntos.length + " adjunto(s) en este registro. " + (carpeta ? "" : "Sin carpeta conectada: los archivos se han descargado con el nombre ya puesto; muévelos a la subcarpeta «" + sub + "» del OneDrive del grupo."));
+}
+
+/* ---------- salida: plantilla ---------- */
+function plantillaTexto(){
+  const secc = (t, v) => t + "\n" + ((v || "").trim() ? v.trim().split(/\n+/).map(x => "  – " + x.trim()).join("\n") : "  – (nada este mes)") + "\n\n";
+  let t = `ACTUALIZACIÓN MENSUAL · ${val("linea")} · ${val("mes")}\nRellena: ${val("persona")}\n${"".padEnd(60, "=")}\n\n`;
+  SECS.forEach(([k, titulo]) => { t += secc(titulo.toUpperCase(), estado.actualizacion[k]); });
+  let n = 4;
+  Object.entries(BLOQUES).forEach(([b, nombre]) => {
+    const regs = estado.registros.filter(g => TIPOS[g.tipo].bloque === b);
+    if (!regs.length) return;
+    t += `${n++} · ${nombre.toUpperCase()}\n`;
+    regs.forEach((g, i) => {
+      const campos = TIPOS[g.tipo].campos.map(([id, lab]) => g[id] ? `${lab}: ${g[id]}` : null).filter(Boolean).join(" | ");
+      const adj = (g.adjuntos || []).length ? ` | Adjuntos: ${g.adjuntos.map(a => a.nombre).join(", ")}` : "";
+      t += `  ${i + 1}. [${TIPOS[g.tipo].etiq}] ${campos}${adj}\n`;
+    });
+    t += "\n";
+  });
+  return t;
+}
+document.getElementById("btnPlantilla").addEventListener("click", () => avisoSalida(plantillaTexto()));
+document.getElementById("btnCopiarPlantilla").addEventListener("click", () => { navigator.clipboard.writeText(plantillaTexto()).then(() => avisoSalida(plantillaTexto() + "\n[Copiado al portapapeles]")); });
 document.getElementById("btnJSON").addEventListener("click", () => {
   descargar(nombreBase() + ".json", JSON.stringify({ linea: val("linea"), mes: val("mes"), persona: val("persona"), actualizacion: estado.actualizacion, registros: estado.registros }, null, 2), "application/json");
 });
+
 /* ---------- CSV con la estructura del Excel del informe anual (Indicadores26_29.xlsx) ---------- */
+const listaAdj = g => (g.adjuntos || []).map(a => a.carpeta + "/" + a.nombre).join(" ; ");
 function csvInforme(regs){
   const esc = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const fila = a => a.map(esc).join(";") + "\n";
@@ -393,7 +625,7 @@ function csvInforme(regs){
   let c = "";
   const pubs = por("publicacion"), tesis = por("tesis"), contr = por("contrato_personal"), fin = por("financiacion");
   const comp = fin.filter(x => String(x.g.tipo_fin || "").toLowerCase().startsWith("competi"));
-  const acred = pubs.filter(x => lleno(x.g.acreditacion));
+  const acred = pubs.filter(x => lleno(x.g.acreditacion) || (x.g.adjuntos || []).length);
   c += fila(["GENERAL", "COMPROMETIDO", "REGISTRADO", "ACREDITADO", "NO ACREDITADO"]);
   c += fila(["Artículos", 60, pubs.length, acred.length, pubs.length - acred.length]);
   c += fila(["Tesis", 10, tesis.length, "", ""]);
@@ -401,36 +633,139 @@ function csvInforme(regs){
   c += fila(["Proyectos", 25, fin.length, "", ""]);
   c += fila(["Proyectos comp.", 18, comp.length, "", ""]) + "\n";
   c += fila(["PUBLICACIONES — pegar en hoja Lineas"]);
-  c += fila(["Persona resp.", "Línea", "Título", "Egoera/Estado", "Revista", "Año", "DOI", "Cuartil", "Base", "Coautoría interna", "Miembros", "Acreditación", "Mes registro"]);
-  pubs.forEach(x => { const g = x.g; c += fila([x.persona, num(x.linea), g.titulo, g.estado, g.revista, g.anio, g.doi, g.cuartil, g.base, g.coautoria, g.miembros, g.acreditacion, x.mes]); });
+  c += fila(["Persona resp.", "Línea", "Título", "Egoera/Estado", "Revista", "Año", "DOI", "Cuartil", "Base", "Coautoría interna", "Miembros", "Acreditación", "Adjuntos", "Mes registro"]);
+  pubs.forEach(x => { const g = x.g; c += fila([x.persona, num(x.linea), g.titulo, g.estado, g.revista, g.anio, g.doi, g.cuartil, g.base, g.coautoria, g.miembros, g.acreditacion, listaAdj(g), x.mes]); });
   c += "\n" + fila(["TESIS — pegar en hoja Contenido"]);
-  c += fila(["Línea", "Arduraduna", "Doctorando", "Defendida", "Int.", "Fecha orient.", "Mes registro"]);
-  tesis.forEach(x => { const g = x.g; c += fila([num(x.linea), g.direccion || x.persona, g.doctorando, String(g.estado || "").toLowerCase().startsWith("defend") ? "Sí" : "", si(g.internacional), g.anio, x.mes]); });
+  c += fila(["Línea", "Arduraduna", "Doctorando", "Defendida", "Int.", "Fecha orient.", "Adjuntos", "Mes registro"]);
+  tesis.forEach(x => { const g = x.g; c += fila([num(x.linea), g.direccion || x.persona, g.doctorando, String(g.estado || "").toLowerCase().startsWith("defend") ? "Sí" : "", si(g.internacional), g.anio, listaAdj(g), x.mes]); });
   c += "\n" + fila(["CONTRATOS — pegar en hoja Contenido"]);
-  c += fila(["Línea", "Arduraduna", "Persona", "Predoc", "Postdoc", "Fuente", "Inicio", "Fin", "Mes registro"]);
-  contr.forEach(x => { const g = x.g; const t = String(g.tipo_con || "").toLowerCase(); c += fila([num(x.linea), x.persona, g.persona, t.includes("pre") ? "1" : "", t.includes("pos") ? "1" : "", g.fuente, g.inicio, g.fin, x.mes]); });
+  c += fila(["Línea", "Arduraduna", "Persona", "Predoc", "Postdoc", "Fuente", "Inicio", "Fin", "Adjuntos", "Mes registro"]);
+  contr.forEach(x => { const g = x.g; const t = String(g.tipo_con || "").toLowerCase(); c += fila([num(x.linea), x.persona, g.persona, t.includes("pre") ? "1" : "", t.includes("pos") ? "1" : "", g.fuente, g.inicio, g.fin, listaAdj(g), x.mes]); });
   c += "\n" + fila(["PROYECTOS/FINANCIACIÓN — pegar en hoja Contenido"]);
-  c += fila(["Línea", "Arduraduna", "Título", "Conv./Tipo", "Comp.", "Cantidad (€)", "Entidad", "Estado", "Inicio", "Fin", "Mes registro"]);
-  fin.forEach(x => { const g = x.g; c += fila([num(x.linea), g.ip || x.persona, g.titulo, [g.convocatoria, g.tipo_fin].filter(Boolean).join(" / "), String(g.tipo_fin || "").toLowerCase().startsWith("competi") ? "Sí" : "", g.importe, g.entidad, g.estado, g.inicio, g.fin, x.mes]); });
-  const cong = por("congreso"), dif = por("difusion");
+  c += fila(["Línea", "Arduraduna", "Título", "Conv./Tipo", "Comp.", "Cantidad (€)", "Entidad", "Estado", "Inicio", "Fin", "Adjuntos", "Mes registro"]);
+  fin.forEach(x => { const g = x.g; c += fila([num(x.linea), g.ip || x.persona, g.titulo, [g.convocatoria, g.tipo_fin].filter(Boolean).join(" / "), String(g.tipo_fin || "").toLowerCase().startsWith("competi") ? "Sí" : "", g.importe, g.entidad, g.estado, g.inicio, g.fin, listaAdj(g), x.mes]); });
+  const cong = por("congreso");
   if (cong.length) {
     c += "\n" + fila(["CONGRESOS — información complementaria"]);
-    c += fila(["Línea", "Autores/as", "Título", "Congreso", "Tipo", "Fecha", "Lugar", "Mes registro"]);
-    cong.forEach(x => { const g = x.g; c += fila([num(x.linea), g.autores, g.titulo, g.congreso, g.tipo_c, g.fecha, g.lugar, x.mes]); });
-  }
-  if (dif.length) {
-    c += "\n" + fila(["DIFUSIÓN/TRANSFERENCIA — información complementaria (web del grupo)"]);
-    c += fila(["Línea", "Actividad", "Público", "Fecha", "Alcance", "Mes registro"]);
-    dif.forEach(x => { const g = x.g; c += fila([num(x.linea), g.actividad, g.publico, g.fecha, g.alcance, x.mes]); });
+    c += fila(["Línea", "Autores/as", "Título", "Congreso", "Tipo", "Fecha", "Lugar", "Adjuntos", "Mes registro"]);
+    cong.forEach(x => { const g = x.g; c += fila([num(x.linea), g.autores, g.titulo, g.congreso, g.tipo_c, g.fecha, g.lugar, listaAdj(g), x.mes]); });
   }
   return c;
 }
 
+/* ---------- Excel (.xlsx) sin librerías externas ---------- */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipStore(files){
+  const enc = new TextEncoder(); const partes = []; const central = []; let off = 0;
+  const u16 = v => [v & 255, (v >>> 8) & 255], u32 = v => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  files.forEach(f => {
+    const nombre = enc.encode(f.name), data = typeof f.data === "string" ? enc.encode(f.data) : f.data, crc = crc32(data);
+    const loc = new Uint8Array([...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nombre.length), ...u16(0)]);
+    partes.push(loc, nombre, data);
+    central.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nombre.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), nombre);
+    off += loc.length + nombre.length + data.length;
+  });
+  const tamCentral = central.reduce((s, p) => s + p.length, 0);
+  const fin = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(tamCentral), ...u32(off), ...u16(0)]);
+  return new Blob([...partes, ...central, fin], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+const xmlEsc = s => String(s ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const colL = i => { let s = ""; i++; while (i) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+function hojaXML(h){
+  const filas = [h.cabecera].concat(h.filas);
+  let x = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  x += '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+  x += "<cols>" + h.cabecera.map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${(h.anchos && h.anchos[i]) || 18}" customWidth="1"/>`).join("") + "</cols><sheetData>";
+  filas.forEach((f, r) => {
+    x += `<row r="${r + 1}">`;
+    f.forEach((v, c) => {
+      const ref = colL(c) + (r + 1), s = String(v ?? "").slice(0, 32000);
+      if (r === 0) { x += `<c r="${ref}" t="inlineStr" s="1"><is><t xml:space="preserve">${xmlEsc(s)}</t></is></c>`; return; }
+      if (/^https?:\/\/\S+$/.test(s.trim()) && s.length < 250) {
+        const u = s.trim().replace(/"/g, '""');
+        x += `<c r="${ref}" t="str" s="3"><f>${xmlEsc(`HYPERLINK("${u}","${u}")`)}</f><v>${xmlEsc(s.trim())}</v></c>`; return;
+      }
+      if (typeof v === "number") { x += `<c r="${ref}" s="2"><v>${v}</v></c>`; return; }
+      x += `<c r="${ref}" t="inlineStr" s="2"><is><t xml:space="preserve">${xmlEsc(s)}</t></is></c>`;
+    });
+    x += "</row>";
+  });
+  x += "</sheetData>";
+  if (h.filas.length) x += `<autoFilter ref="A1:${colL(h.cabecera.length - 1)}${filas.length}"/>`;
+  return x + "</worksheet>";
+}
+function crearXLSX(hojas){
+  const ws = hojas.map((h, i) => ({ name: `xl/worksheets/sheet${i + 1}.xml`, data: hojaXML(h) }));
+  const nombreHoja = n => xmlEsc(String(n).replace(/[\[\]:*?\/\\]/g, " ").slice(0, 31));
+  return zipStore([
+    { name: "[Content_Types].xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + hojas.map((h, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("") + "</Types>" },
+    { name: "_rels/.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+    { name: "xl/workbook.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + hojas.map((h, i) => `<sheet name="${nombreHoja(h.nombre)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("") + "</sheets></workbook>" },
+    { name: "xl/_rels/workbook.xml.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + hojas.map((h, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("") + `<Relationship Id="rId${hojas.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { name: "xl/styles.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><u/><sz val="11"/><color rgb="FF0563C1"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF473A70"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+    ...ws
+  ]);
+}
+const numL = l => (String(l).match(/\d/) || [""])[0];
+const campoCols = tipo => TIPOS[tipo].campos.map(([id, lab]) => [id, lab.split(" (")[0]]);
+function xlsxTransferencia(regs){
+  const tr = regs.filter(x => x.g.tipo === "transferencia");
+  const cols = campoCols("transferencia");
+  const hoja = { nombre: "Transferencia", cabecera: ["Línea", "Mes registro", "Registrado por"].concat(cols.map(c => c[1])).concat(["Adjuntos"]),
+    anchos: [7, 14, 18].concat(cols.map(([id]) => ["descripcion", "titulo", "destinatarios"].includes(id) ? 40 : (["enlace", "material"].includes(id) ? 36 : 18))).concat([40]),
+    filas: tr.map(x => [numL(x.linea), x.mes, x.persona].concat(cols.map(([id]) => x.g[id] || "")).concat([listaAdj(x.g)])) };
+  const cuenta = {}; tr.forEach(x => { const k = x.g.subtipo || "(sin tipo)"; cuenta[k] = (cuenta[k] || 0) + 1; });
+  const porLinea = {}; tr.forEach(x => { const k = "Línea " + numL(x.linea); porLinea[k] = (porLinea[k] || 0) + 1; });
+  const web = tr.filter(x => String(x.g.web || "").startsWith("Sí"));
+  const resumen = { nombre: "Resumen", cabecera: ["Tipo de transferencia", "Nº"], anchos: [50, 10],
+    filas: SUBTIPOS_TR.filter(s => cuenta[s]).map(s => [s, cuenta[s]]).concat(Object.keys(cuenta).filter(k => !SUBTIPOS_TR.includes(k)).map(k => [k, cuenta[k]]))
+      .concat([["", ""], ["Total", tr.length], ["Marcados para la web", web.length], ["", ""]]).concat(Object.entries(porLinea).sort().map(([k, v]) => [k, v])) };
+  const paraWeb = { nombre: "Para la web", cabecera: ["Tipo", "Título", "Descripción", "Enlace", "Material", "Fecha", "Línea"], anchos: [30, 40, 60, 40, 40, 14, 8],
+    filas: web.map(x => [x.g.subtipo || "", x.g.titulo || "", x.g.descripcion || "", x.g.enlace || "", x.g.material || "", x.g.fecha || "", numL(x.linea)]) };
+  return crearXLSX([hoja, paraWeb, resumen]);
+}
+function xlsxRed(regs){
+  const col = regs.filter(x => x.g.tipo === "colaboracion_externa"), con = regs.filter(x => x.g.tipo === "contacto_centro");
+  const mk = (nombre, tipo, lista, anchosLargos) => {
+    const cols = campoCols(tipo);
+    return { nombre, cabecera: ["Línea", "Mes registro", "Registrado por"].concat(cols.map(c => c[1])).concat(["Adjuntos"]),
+      anchos: [7, 14, 18].concat(cols.map(([id]) => anchosLargos.includes(id) ? 40 : 18)).concat([36]),
+      filas: lista.map(x => [numL(x.linea), x.mes, x.persona].concat(cols.map(([id]) => x.g[id] || "")).concat([listaAdj(x.g)])) };
+  };
+  const hCol = mk("Colaboraciones externas", "colaboracion_externa", col, ["entidad", "resultado", "evidencia"]);
+  const hCon = mk("Contactos con centros", "contacto_centro", con.slice().sort((a, b) => String(a.g.centro || "").localeCompare(String(b.g.centro || ""), "es")), ["centro", "detalle", "observaciones"]);
+  const colaboran = con.filter(x => /^colabor/i.test(String(x.g.resultado || "")));
+  const filas = [];
+  AMBITOS.concat(["(sin ámbito)"]).forEach(a => {
+    const f = x => (x.g.ambito || "(sin ámbito)") === a;
+    const nc = col.filter(f).length, nk = colaboran.filter(f).length;
+    if (nc || nk || a !== "(sin ámbito)") filas.push([a, nc, nk, new Set(col.filter(f).map(x => x.g.entidad).concat(colaboran.filter(f).map(x => x.g.centro)).filter(Boolean)).size]);
+  });
+  filas.push(["", "", "", ""], ["País", "Colaboraciones externas", "Centros que colaboraron", "Entidades distintas"]);
+  const paises = {};
+  col.forEach(x => { const p = x.g.pais || "(sin país)"; paises[p] = paises[p] || [0, 0, new Set()]; paises[p][0]++; if (x.g.entidad) paises[p][2].add(x.g.entidad); });
+  colaboran.forEach(x => { const p = x.g.pais || "(sin país)"; paises[p] = paises[p] || [0, 0, new Set()]; paises[p][1]++; if (x.g.centro) paises[p][2].add(x.g.centro); });
+  Object.entries(paises).sort((a, b) => a[0].localeCompare(b[0], "es")).forEach(([p, v]) => filas.push([p, v[0], v[1], v[2].size]));
+  const hRes = { nombre: "Internacionalización", cabecera: ["Ámbito", "Colaboraciones externas", "Centros que colaboraron", "Entidades distintas"], anchos: [30, 24, 24, 20], filas };
+  return crearXLSX([hCol, hCon, hRes]);
+}
+const regsActuales = () => estado.registros.map(g => ({ g, linea: val("linea"), mes: val("mes"), persona: val("persona") }));
+const hayTipo = (regs, pred) => regs.some(x => pred(x.g));
 document.getElementById("btnCSV").addEventListener("click", () => {
-  const s = document.getElementById("salida");
-  if (!estado.registros.length) { s.style.display = "block"; s.textContent = "No hay indicadores que exportar."; return; }
-  const regs = estado.registros.map(g => ({ g, linea: val("linea"), mes: val("mes"), persona: val("persona") }));
+  const regs = regsActuales();
+  if (!hayTipo(regs, g => TIPOS[g.tipo].bloque === "ind")) { avisoSalida("No hay indicadores que exportar."); return; }
   descargar(nombreBase() + "_indicadores.csv", "\uFEFF" + csvInforme(regs), "text/csv;charset=utf-8");
+});
+document.getElementById("btnXlsxTr").addEventListener("click", () => {
+  const regs = regsActuales();
+  if (!hayTipo(regs, g => g.tipo === "transferencia")) { avisoSalida("No hay registros de transferencia que exportar."); return; }
+  descargar(nombreBase() + "_transferencia.xlsx", xlsxTransferencia(regs));
+});
+document.getElementById("btnXlsxRed").addEventListener("click", () => {
+  const regs = regsActuales();
+  if (!hayTipo(regs, g => g.tipo === "colaboracion_externa" || g.tipo === "contacto_centro")) { avisoSalida("No hay colaboraciones externas ni contactos que exportar."); return; }
+  descargar(nombreBase() + "_colaboraciones_contactos.xlsx", xlsxRed(regs));
 });
 
 /* ---------- importar JSON guardado ---------- */
@@ -438,7 +773,7 @@ document.getElementById("importJSON").addEventListener("change", e => {
   const f = e.target.files[0]; if (!f) return;
   const lector = new FileReader();
   lector.onload = () => {
-    try { cargarDatos(JSON.parse(lector.result)); document.getElementById("revision").classList.add("visible"); document.getElementById("msgImport").textContent = "Cargado: " + f.name; }
+    try { cargarDatos(JSON.parse(lector.result), false); mostrarRevision(); document.getElementById("msgImport").textContent = "Cargado: " + f.name; }
     catch (err) { document.getElementById("msgImport").textContent = "El archivo no es un JSON válido."; }
   };
   lector.readAsText(f);
@@ -448,52 +783,26 @@ document.getElementById("importJSON").addEventListener("change", e => {
 document.getElementById("consolidar").addEventListener("change", async e => {
   const files = [...e.target.files]; if (!files.length) return;
   const msg = document.getElementById("msgCons");
-  const regs = []; let n = 0, errores = [], resumen = {};
+  const regs = []; let errores = [], resumen = {};
   for (const f of files) {
     try {
       const d = JSON.parse(await f.text());
-      (Array.isArray(d.registros) ? d.registros : []).forEach(g => {
-        if (!g || !g.tipo || !CAMPOS[g.tipo]) return;
+      (Array.isArray(d.registros) ? d.registros : []).map(normalizarRegistro).filter(Boolean).forEach(g => {
         regs.push({ g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "" });
-        n++;
-        const k = (d.linea || "(sin línea)") + " · " + ETIQ[g.tipo];
+        const k = (d.linea || "(sin línea)") + " · " + TIPOS[g.tipo].etiq;
         resumen[k] = (resumen[k] || 0) + 1;
       });
     } catch (err) { errores.push(f.name); }
   }
-  const s = document.getElementById("salida");
-  s.style.display = "block";
-  s.textContent = "CONSOLIDADO: " + n + " registros de " + files.length + " archivo(s)\n" +
-    Object.entries(resumen).map(([k, v]) => "  " + k + ": " + v).join("\n") +
-    (errores.length ? "\nArchivos ilegibles: " + errores.join(", ") : "");
-  if (n) descargar("QUALIKER_indicadores_consolidados_" + new Date().toISOString().slice(0, 10) + ".csv", "\uFEFF" + csv, "text/csv;charset=utf-8");
-  msg.textContent = n ? "CSV consolidado descargado." : "No se han encontrado registros en los archivos.";
+  avisoSalida("CONSOLIDADO: " + regs.length + " registros de " + files.length + " archivo(s)\n" +
+    Object.entries(resumen).sort().map(([k, v]) => "  " + k + ": " + v).join("\n") +
+    (errores.length ? "\nArchivos ilegibles: " + errores.join(", ") : ""));
+  const fecha = new Date().toISOString().slice(0, 10), hechos = [];
+  if (hayTipo(regs, g => TIPOS[g.tipo].bloque === "ind")) { await descargar(`QUALIKER_indicadores_consolidados_${fecha}.csv`, "\uFEFF" + csvInforme(regs), "text/csv;charset=utf-8"); hechos.push("CSV de indicadores"); }
+  if (hayTipo(regs, g => g.tipo === "transferencia")) { await descargar(`QUALIKER_transferencia_consolidada_${fecha}.xlsx`, xlsxTransferencia(regs)); hechos.push("Excel de transferencia"); }
+  if (hayTipo(regs, g => g.tipo === "colaboracion_externa" || g.tipo === "contacto_centro")) { await descargar(`QUALIKER_colaboraciones_contactos_${fecha}.xlsx`, xlsxRed(regs)); hechos.push("Excel de colaboraciones y contactos"); }
+  msg.textContent = hechos.length ? "Generado: " + hechos.join(", ") + "." : "No se han encontrado registros en los archivos.";
   e.target.value = "";
-});
-
-/* ---------- registro manual (opcional) ---------- */
-function pintarForm(){
-  const tipo = document.getElementById("tipoReg").value;
-  const cont = document.getElementById("formReg");
-  cont.innerHTML = "";
-  CAMPOS[tipo].forEach(([id, lab]) => {
-    const l = document.createElement("label"); l.textContent = lab; cont.appendChild(l);
-    const i = document.createElement("input"); i.type = "text"; i.id = "f_" + id; cont.appendChild(i);
-  });
-}
-document.getElementById("tipoReg").addEventListener("change", pintarForm);
-pintarForm();
-document.getElementById("btnAddReg").addEventListener("click", () => {
-  const tipo = document.getElementById("tipoReg").value;
-  const g = { tipo }; let vacio = true;
-  CAMPOS[tipo].forEach(([id]) => { const v = val("f_" + id).trim(); if (v) vacio = false; g[id] = v; });
-  if (vacio) { document.getElementById("msgReg").textContent = "Está vacío."; return; }
-  estado.registros.push(g);
-  CAMPOS[tipo].forEach(([id]) => { const el = document.getElementById("f_" + id); if (el) el.value = ""; });
-  document.getElementById("msgReg").textContent = "Añadido.";
-  setTimeout(() => document.getElementById("msgReg").textContent = "", 1500);
-  document.getElementById("revision").classList.add("visible");
-  pintarRevision();
 });
 </script>
 </body>
