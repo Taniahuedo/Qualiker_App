@@ -81,6 +81,7 @@
         <option value="Línea 3">Línea 3 · Conducta suicida y posvención</option>
         <option value="Línea 4">Línea 4 · Envejecimiento activo</option>
         <option value="Línea 5">Línea 5 · Metodológica</option>
+        <option value="Fuera de líneas">Fuera de líneas · No encaja en ninguna línea</option>
       </select>
     </div>
     <div><label>Mes</label><input type="text" id="mes"></div>
@@ -310,7 +311,7 @@ function describirTipos(){
   }).join("\n");
 }
 function promptAgente(){
-  return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de la ${val("linea")} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas, notas sueltas o transcripciones de audio.
+  return `Eres el asistente de gestión del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Sistema Universitario Vasco). Debajo va un volcado en bruto de ${val("linea").startsWith("Línea") ? "la " + val("linea") : "registros fuera de líneas"} (${val("mes")}, escrito por ${val("persona") || "[persona]"}): puede mezclar correos, referencias bibliográficas, notas sueltas o transcripciones de audio.
 
 Tu tarea, sin inventar absolutamente nada:
 1. Ordena el contenido en tres apartados: avances (logros del mes, "hemos pasado de A a B"), proximo, peticiones (SOLO colaboraciones entre líneas o subequipos del propio grupo YA cerradas: con quién, en qué y con qué contraprestación pactada). Las peticiones de ayuda sin acuerdo cerrado y las propuestas de temas para reuniones NO van en ningún apartado. Frases cortas, una idea por línea, separadas por saltos de línea. Apartado sin contenido = cadena vacía.
@@ -601,16 +602,16 @@ async function descargar(nombre, contenido, tipo, subcarpeta){
   return "descargado";
 }
 function slug(s, max){ return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, max || 40); }
+function codLinea(l){ const t = String(l || ""); const m = t.match(/\d/); return m ? m[0] : (/fuera/i.test(t) ? "Fuera" : ""); }
+function etiqLinea(){ const l = codLinea(val("linea")) || "X"; return l === "Fuera" ? "FueraLineas" : "L" + l; }
 function nombreBase(){
-  const l = (val("linea").match(/Línea (\d)/) || [,"X"])[1];
-  return `QUALIKER_L${l}_${(val("mes") || "mes").replace(/\s+/g, "-")}_${val("persona").split(/\s+/)[0] || "persona"}`;
+  return `QUALIKER_${etiqLinea()}_${(val("mes") || "mes").replace(/\s+/g, "-")}_${val("persona").split(/\s+/)[0] || "persona"}`;
 }
 async function adjuntarArchivos(reg, files){
   const bloque = TIPOS[reg.tipo].bloque, sub = CARPETA_MATERIAL[bloque];
-  const l = (val("linea").match(/Línea (\d)/) || [,"X"])[1];
   reg.adjuntos = reg.adjuntos || [];
   for (const f of files) {
-    const nombre = [`L${l}`, slug(val("mes"), 20), slug(TIPOS[reg.tipo].etiq, 20), slug(reg.titulo || reg.entidad || reg.centro || reg.doctorando || reg.persona || "", 40), f.name.replace(/[\\/:*?"<>|]/g, "_")].filter(Boolean).join("_");
+    const nombre = [etiqLinea(), slug(val("mes"), 20), slug(TIPOS[reg.tipo].etiq, 20), slug(reg.titulo || reg.entidad || reg.centro || reg.doctorando || reg.persona || "", 40), f.name.replace(/[\\/:*?"<>|]/g, "_")].filter(Boolean).join("_");
     const res = await descargar(nombre, f, f.type || "application/octet-stream", sub);
     reg.adjuntos.push({ nombre, carpeta: sub, original: f.name, estado: res === "guardado" ? "guardado" : (res === "descargado" ? "descargado: muévelo a «" + sub + "»" : "no guardado") });
   }
@@ -792,7 +793,7 @@ function csvInforme(regs){
   const esc = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const fila = a => a.map(esc).join(";") + "\n";
   const por = t => regs.filter(x => x.g.tipo === t);
-  const num = l => (String(l).match(/\d/) || [""])[0];
+  const num = codLinea;
   const si = v => String(v || "").toLowerCase().startsWith("s") ? "Sí" : "";
   const lleno = v => { const s = String(v || "").trim(); return s && !s.includes("[VERIFICAR]"); };
   let c = "";
@@ -880,7 +881,7 @@ function crearXLSX(hojas){
     ...ws
   ]);
 }
-const numL = l => (String(l).match(/\d/) || [""])[0];
+const numL = codLinea;
 const campoCols = tipo => TIPOS[tipo].campos.map(([id, lab]) => [id, lab.split(" (")[0]]);
 function xlsxTransferencia(regs){
   const tr = regs.filter(x => x.g.tipo === "transferencia");
@@ -889,7 +890,7 @@ function xlsxTransferencia(regs){
     anchos: [7, 14, 18].concat(cols.map(([id]) => ["descripcion", "titulo", "destinatarios"].includes(id) ? 40 : (["enlace", "material"].includes(id) ? 36 : 18))).concat([40]),
     filas: tr.map(x => [numL(x.linea), x.mes, x.persona].concat(cols.map(([id]) => x.g[id] || "")).concat([listaAdj(x.g)])) };
   const cuenta = {}; tr.forEach(x => { const k = x.g.subtipo || "(sin tipo)"; cuenta[k] = (cuenta[k] || 0) + 1; });
-  const porLinea = {}; tr.forEach(x => { const k = "Línea " + numL(x.linea); porLinea[k] = (porLinea[k] || 0) + 1; });
+  const porLinea = {}; tr.forEach(x => { const n = numL(x.linea), k = n === "Fuera" ? "Fuera de líneas" : "Línea " + n; porLinea[k] = (porLinea[k] || 0) + 1; });
   const web = tr.filter(x => String(x.g.web || "").startsWith("Sí"));
   const resumen = { nombre: "Resumen", cabecera: ["Tipo de transferencia", "Nº"], anchos: [50, 10],
     filas: SUBTIPOS_TR.filter(s => cuenta[s]).map(s => [s, cuenta[s]]).concat(Object.keys(cuenta).filter(k => !SUBTIPOS_TR.includes(k)).map(k => [k, cuenta[k]]))
