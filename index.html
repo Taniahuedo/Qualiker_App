@@ -873,7 +873,8 @@ document.getElementById("btnJSON").addEventListener("click", async () => {
 });
 
 /* ---------- CSV con la estructura del Excel del informe anual (Indicadores26_29.xlsx) ---------- */
-const listaAdj = g => (g.adjuntos || []).map(a => a.carpeta + "/" + a.nombre).join(" ; ");
+const carpetaAdj = a => (!a.carpeta || /^Material de /i.test(a.carpeta)) ? CARPETA_PRODUCTOS : a.carpeta;   /* las antiguas «Material de…» ahora son «Productos» */
+const listaAdj = g => (g.adjuntos || []).map(a => carpetaAdj(a) + "/" + a.nombre).join(" ; ");
 function csvInforme(regs){
   const esc = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const fila = a => a.map(esc).join(";") + "\n";
@@ -1380,7 +1381,7 @@ function xlsxIndicadores(D){
   filasG.push(["", "", "", "", "", "", "", "", "", "Puntos", { f: `SUM(K2:K${ult})`, v: D.puntos, s: 5 }, ""]);
   const general = { nombre: "General", cabecera: ["Indicador", "Comprometido", "2026", "2027", "2028", "2029", "Total que cuenta", "Falta", "Tasa de cumplimiento", "Ponderación", "Coeficiente", "Registrados que aún no cuentan"],
     anchos: [34, 13, 8, 8, 8, 8, 14, 9, 14, 12, 12, 20], filas: filasG };
-  const productoTxt = u => u.adjuntos.length ? u.adjuntos.map(a => (a.carpeta || CARPETA_PRODUCTOS) + "/" + a.nombre).join(" ; ") : (enlaceDe(u.g) || "pendiente de acreditar");
+  const productoTxt = u => u.adjuntos.length ? u.adjuntos.map(a => carpetaAdj(a) + "/" + a.nombre).join(" ; ") : (enlaceDe(u.g) || "pendiente de acreditar");
   const I = id => INDICADORES.find(x => x.id === id);
   const det = (nombre, tipo, ind, extra) => {
     const cols = campoCols(tipo), lista = D.U.filter(u => u.g.tipo === tipo);
