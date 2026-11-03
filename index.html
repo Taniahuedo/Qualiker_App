@@ -60,6 +60,17 @@
   .enlace{background:none; border:none; color:var(--azul); text-decoration:underline; cursor:pointer; font-size:.85rem; padding:0; margin-left:6px;}
   #buscarGrupo{max-width:360px; margin-top:8px;}
   @media (max-width:640px){ .formreg .grid{grid-template-columns:1fr;} }
+  .sem{display:inline-block; padding:1px 9px; border-radius:10px; font-size:.78rem; font-weight:600;}
+  .sem.verde{background:#E3F2E8; color:#1E6B3A;} .sem.ambar{background:#FFF3D6; color:#7A5300;} .sem.rojo{background:#FDECEA; color:#8a2b22;}
+  .prod{font-size:.78rem; display:block; margin-top:3px; color:var(--gris);}
+  .prod.pend{display:inline-block; background:#FFF3D6; color:#7A5300; border-radius:8px; padding:1px 7px;}
+  .informe{margin-top:12px; border-top:1px solid var(--borde); padding-top:4px;}
+  .informe td.n, .informe th.n{text-align:right; white-space:nowrap;}
+  .informe ul.lista{margin:4px 0 0 18px;} .informe ul.lista ul{margin:2px 0 6px 16px;}
+  .textoweb{white-space:pre-wrap; background:#faf9fc; border:1px solid var(--borde); border-radius:8px; padding:10px 12px; font-size:.83rem; max-height:260px; overflow:auto;}
+  .puntos{font-size:.95rem; color:var(--azul); margin-top:8px;}
+  footer{text-align:center; font-size:.75rem; color:var(--gris); padding:0 16px 24px;}
+  @media (max-width:640px){ main{padding:14px 12px 40px;} header{padding:12px 14px;} .informe table, #listaRegs table{display:block; overflow-x:auto;} }
 </style>
 </head>
 <body>
@@ -67,7 +78,7 @@
   <span class="logochip"><img src="data:image/jpeg;base64,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" alt="Logo QUALIKER"></span>
   <div>
   <h1>QUALIKER (IT1922-26) · Actualización mensual e indicadores</h1>
-  <p>Pega lo que tengas, la IA lo ordena, tú solo revisas. Sube tu actualización como mínimo 24 horas antes de la reunión. Los datos no se guardan solos: pulsa «Guardar en la carpeta del grupo» antes de cerrar.</p>
+  <p>Pega lo que tengas (o solo los DOI), revisa y adjunta el documento que lo acredita. Un archivo por persona y mes, con sus documentos dentro: nadie tiene que mandar nada por correo. Guarda como mínimo 24 horas antes de la reunión.</p>
   </div>
 </header>
 <main>
@@ -87,46 +98,46 @@
     <div><label>Mes</label><input type="text" id="mes"></div>
     <div><label>Quién rellena</label><input type="text" id="persona" placeholder="Nombre y apellido"></div>
   </div>
-  <p class="nota" id="zonaCarpeta" hidden>Carpeta del grupo: <span id="estadoCarpeta">sin conectar</span>
+  <p class="nota" id="zonaCarpeta" hidden>Si tienes «app_indicadores» en tu OneDrive y usas Chrome o Edge, conéctala una vez y todo se guarda solo. Carpeta del grupo: <span id="estadoCarpeta">sin conectar</span>
     <button class="btn mini sec" id="btnCarpeta" type="button">Conectar la carpeta del grupo</button>
-    <span id="msgCarpeta" class="exito"></span><br>Es «app_indicadores», dentro de QUALIKER_2026_29 (OneDrive compartido de Nekane). Todo se guarda ahí y en ningún otro sitio.</p>
+    <span id="msgCarpeta" class="exito"></span></p>
+  <p class="nota">Sin conectar nada también funciona, en cualquier navegador: al guardar se descarga un solo archivo, con tus documentos dentro, y lo arrastras a la carpeta del grupo («app_indicadores», dentro de QUALIKER_2026_29). <a href="#" target="_blank" rel="noopener" class="lnkCarpeta">Abrir la carpeta del grupo</a></p>
 </div>
 
 <div class="card" id="cardGrupo">
-  <div class="paso"><span class="num">0</span><h2>Antes de empezar, mira lo que ya hay en el grupo</h2></div>
-  <p class="nota">Para no registrar dos veces lo que otra persona ya ha metido: un proyecto compartido, una tesis, un centro que ya se contactó. La app lee los JSON guardados en la carpeta del grupo y, a partir de ahí, te avisa si lo que añades se parece a algo ya registrado.</p>
-  <button class="btn grande sec" id="btnVerGrupo">Ver lo que ya hay en el grupo</button>
-  <button class="enlace" id="btnGrupoArchivos" type="button">o elige tú los JSON</button>
+  <div class="paso"><span class="num">0</span><h2>Cómo vamos y qué hay ya en el grupo</h2></div>
+  <p class="nota">Para cualquiera del grupo. La app lee los archivos de la carpeta del grupo y muestra el semáforo de indicadores (lo que ya cuenta y lo que falta), lo pendiente de acreditar, los textos listos para la web y todo lo registrado, para no meter dos veces lo mismo. Si no tienes la carpeta en tu ordenador, abre en OneDrive «Informes del grupo / QUALIKER_como_vamos.docx», que se actualiza cada vez que alguien genera el informe.</p>
+  <button class="btn grande sec" id="btnVerGrupo">Ver cómo vamos</button>
+  <button class="enlace" id="btnGrupoArchivos" type="button">o elige tú los archivos</button>
   <input type="file" id="grupoArchivos" accept=".json" multiple hidden>
   <span id="msgGrupo" class="exito"></span>
+  <div id="zonaComoVamos"></div>
   <div id="zonaGrupo"></div>
 </div>
 
 <div class="card">
   <div class="paso"><span class="num">1</span><h2>Pega aquí todo lo que tengas, tal cual</h2></div>
-  <p class="nota">Vale cualquier cosa y en cualquier orden: un correo, la referencia de un paper, un trozo de tu CV, notas de una reunión, un audio dictado. También transferencia (un cuestionario con su enlace, un curso impartido, una guía, una charla, una noticia), colaboraciones con grupos de fuera y contactos con centros. No rellenes nada a mano que ya exista escrito en otro sitio.</p>
+  <p class="nota">Vale cualquier cosa y en cualquier orden: un correo, la referencia de un paper, un trozo de tu CV, notas de una reunión, un audio dictado. También transferencia (un cuestionario con su enlace, un curso impartido, una guía, una charla, una noticia), colaboraciones con grupos de fuera y contactos con centros. No rellenes nada a mano que ya exista escrito en otro sitio. Si pegas DOI, la app trae sola los datos de cada publicación, sin pasar por la IA.</p>
   <textarea id="volcado" placeholder="Ej.: pega aquí el correo de aceptación del paper + el enlace del cuestionario que hemos publicado + tus notas del mes..."></textarea>
   <button class="btn sec" id="btnDictar">🎙 Dictar</button>
   <span id="msgDictado" class="nota"></span>
+  <button class="btn" id="btnDOI" type="button" hidden>Crear las publicaciones desde sus DOI</button>
+  <span id="msgDOI" class="exito"></span>
 </div>
 
 <div class="card">
-  <div class="paso"><span class="num">2</span><h2>Copia el paquete y pégalo en tu IA</h2></div>
-  <p class="nota">El botón copia tus notas junto con las instrucciones. Pégalo en Claude (o el chatbot que uses) y copia su respuesta completa.</p>
-  <button class="btn grande" id="btnCopiarPrompt">Copiar paquete para la IA</button>
+  <div class="paso"><span class="num">2</span><h2>Lo demás, ordénalo con tu IA y pega aquí su respuesta</h2></div>
+  <p class="nota">Para todo lo que no sea un DOI. El botón copia tus notas con las instrucciones: pégalo en Claude, Copilot o el chatbot que uses y trae aquí su respuesta completa.</p>
+  <button class="btn grande" id="btnCopiarPrompt">Copiar para la IA</button>
   <span id="msgPrompt" class="exito"></span>
-</div>
-
-<div class="card">
-  <div class="paso"><span class="num">3</span><h2>Pega aquí la respuesta de la IA</h2></div>
-  <textarea id="respuesta" placeholder="Pega la respuesta completa del chatbot (con el bloque JSON) y listo."></textarea>
+  <textarea id="respuesta" placeholder="Pega aquí la respuesta completa del chatbot (con el bloque JSON)." style="margin-top:10px"></textarea>
   <button class="btn grande" id="btnProcesar">Procesar respuesta</button>
   <span id="msgProc" class="exito"></span><span id="errProc" class="error"></span>
 </div>
 
 <div class="card">
   <div class="paso"><span class="num">+</span><h2>O añádelo a mano</h2></div>
-  <p class="nota">Para lo que no tengas escrito en ningún sitio, o para adjuntar documentos (la publicación, la carta del contrato, el material de un curso…). Los adjuntos se guardan en la carpeta del grupo, en «Material de indicadores» o «Material de transferencia».</p>
+  <p class="nota">Para lo que no tengas escrito en ningún sitio. Aquí también puedes adjuntar el documento que lo acredita (la publicación, la resolución, el contrato, el certificado del congreso, el material de un curso); acaba en la subcarpeta «Productos» de la carpeta del grupo.</p>
   <button class="btn anadir" data-bloque="ind">+ Indicador</button>
   <button class="btn anadir" data-bloque="tr">+ Transferencia</button>
   <button class="btn anadir" data-bloque="col">+ Colaboración externa</button>
@@ -136,15 +147,16 @@
 
 <div class="card" id="revision">
   <div class="paso"><span class="num">✓</span><h2>Revisa y guarda</h2></div>
-  <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que faltaba: pulsa «Editar» para completarlo ahora o déjalo para el mes que viene. Con «Adjuntar» subes el documento que lo acredita.</p>
+  <p class="nota">Lo marcado <span class="verificar">[VERIFICAR]</span> es un dato que faltaba: pulsa «Editar» para completarlo ahora o déjalo para el mes que viene. En la columna «Producto», «Adjuntar» añade el documento que acredita cada registro; también vale su enlace o DOI. Lo que no tenga nada queda «pendiente de acreditar» y se puede guardar igual.</p>
   <p class="nota" id="notaDup"></p>
   <div id="editSecciones"></div>
   <div id="listaRegs"></div>
   <div class="exportar">
-    <button class="btn" id="btnJSON">Guardar en la carpeta del grupo</button>
+    <button class="btn" id="btnJSON">Guardar mi archivo del mes</button>
     <button class="btn sec" id="btnPlantilla">Ver plantilla de reunión</button>
     <button class="btn sec" id="btnCopiarPlantilla">Copiar plantilla</button>
-    <p class="nota">Se guarda un solo archivo tuyo por mes; si vuelves a guardar, se actualiza ese mismo archivo. El Excel y el CSV del grupo no se hacen aquí: se generan una vez para todo el grupo desde «Opciones».</p>
+    <p class="nota">Con la carpeta conectada se guarda directamente en «app_indicadores» (subcarpeta del mes) y los documentos en «Productos»; si vuelves a guardar, se actualiza el mismo archivo. Sin conectarla se descarga un único archivo con los documentos dentro, que arrastras a la carpeta del grupo. El Excel del grupo y el informe salen solos de lo que hay en la carpeta: no hay que mandar nada a nadie.</p>
+    <p class="nota" id="pasoSubir" hidden><b>Último paso:</b> <a href="#" target="_blank" rel="noopener" class="lnkCarpeta">abre la carpeta del grupo</a> y arrastra ahí el archivo que se acaba de descargar (a la carpeta principal o a la del mes, da igual).</p>
   </div>
   <pre class="salida" id="salida" style="display:none"></pre>
 </div>
@@ -160,11 +172,12 @@
     <button class="enlace" id="btnInformeArchivos" type="button">o elige tú los JSON</button>
     <input type="file" id="consolidar" accept=".json" multiple hidden>
     <span id="msgCons" class="exito"></span>
-    <p class="nota">Lee todas las actualizaciones guardadas en la carpeta del grupo y deja en la subcarpeta «Informes del grupo» tres archivos: QUALIKER_indicadores_grupo.csv, QUALIKER_transferencia_grupo.xlsx y QUALIKER_colaboraciones_contactos_grupo.xlsx. Cada vez que lo generas sustituye a los anteriores, así que siempre hay una sola versión. Ciérralos en Excel antes de volver a generarlos.</p>
-    <p class="nota" style="margin-top:12px">Cómo funciona: 0 mira lo que ya hay en el grupo → 1 pega (o dicta) lo que tengas → 2 copia el paquete y pásalo por tu IA → 3 pega la respuesta → revisa, adjunta y guarda, como mínimo 24 horas antes de la reunión. Todo va a una sola carpeta: «app_indicadores», dentro de QUALIKER_2026_29. Tu archivo se guarda en la subcarpeta del mes (por ejemplo, «2026-10 octubre») con el nombre QUALIKER_L4_octubre-2026_Nombre.json, y los adjuntos en «Material de indicadores» y «Material de transferencia». Si no ves esa carpeta en tu ordenador, ábrela en OneDrive web y pulsa «Añadir acceso directo a Mis archivos»; en unos minutos aparece dentro de tu OneDrive. Si tu navegador no permite conectar carpetas, el archivo se descarga y lo subes tú a la subcarpeta del mes. La app no envía nada a ningún servidor; lo que pegas en tu chatbot sí pasa por ese servicio.</p>
+    <p class="nota">Lee todos los archivos de la carpeta del grupo, saca a «Productos» los documentos que vengan dentro y deja en «Informes del grupo»: QUALIKER_como_vamos.docx (el informe para todo el grupo), QUALIKER_indicadores_grupo.xlsx (hoja General como la del Excel del grupo y una hoja por indicador), QUALIKER_transferencia_grupo.xlsx y QUALIKER_colaboraciones_contactos_grupo.xlsx. Cada vez sustituyen a los anteriores; ciérralos antes de volver a generarlos.</p>
+    <p class="nota" style="margin-top:12px">Cómo funciona: 0 mira cómo vamos y lo que ya hay → 1 pega lo que tengas (los DOI se rellenan solos) → 2 lo demás, pásalo por tu IA y pega su respuesta → revisa, adjunta el producto y guarda, como mínimo 24 horas antes de la reunión. Todo va a «app_indicadores», dentro de QUALIKER_2026_29: tu archivo en la subcarpeta del mes y los documentos en «Productos». Para conectar la carpeta tienes que verla en tu ordenador: ábrela en OneDrive web y pulsa «Añadir acceso directo a Mis archivos». Si no, guarda igual: se descarga un archivo con todo dentro y lo arrastras a la carpeta. La app no envía nada a ningún servidor salvo, si pegas DOI, la consulta de esos DOI a Crossref; lo que pegas en tu chatbot sí pasa por ese servicio.</p>
   </details>
 </div>
 </main>
+<footer>QUALIKER (IT1922-26) · App de indicadores · Versión 4, 3 de noviembre de 2026</footer>
 
 <script>
 "use strict";
@@ -254,6 +267,10 @@ const TIPOS = {
 const BLOQUES = { ind: "Indicadores", tr: "Transferencia", col: "Colaboraciones externas", con: "Contactos con centros" };
 const CARPETA_MATERIAL = { ind: "Material de indicadores", tr: "Material de transferencia", col: "Material de indicadores", con: "Material de indicadores" };
 const SECS = [["avances","1 · Logros y avances del mes"],["proximo","2 · Próximo mes"],["peticiones","3 · Sinergias consolidadas (con quién, qué y contraprestación pactada)"]];
+const CARPETA_PRODUCTOS = "Productos";
+const URL_CARPETA = "https://upvehueus-my.sharepoint.com/shared?id=%2Fpersonal%2Fnekane%5Fballuerka%5Fehu%5Feus%2FDocuments%2FQUALIKER%5F2026%5F29%2Fapp%5Findicadores";
+const MAX_DENTRO = 10 * 1024 * 1024;   /* documentos de hasta 10 MB viajan dentro del archivo */
+document.querySelectorAll(".lnkCarpeta").forEach(a => { a.href = URL_CARPETA; });
 
 function val(id){ return (document.getElementById(id) || {}).value || ""; }
 function escapeHtml(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
@@ -373,7 +390,9 @@ function cargarDatos(d, sumar){
     estado.actualizacion[k] = (sumar && estado.actualizacion[k] && nuevo) ? estado.actualizacion[k] + "\n" + nuevo : (nuevo || (sumar ? estado.actualizacion[k] : ""));
   });
   const regs = (Array.isArray(d.registros) ? d.registros : []).map(normalizarRegistro).filter(Boolean);
-  estado.registros = sumar ? estado.registros.concat(regs) : regs;
+  const doiNorm = g => String(g.doi || "").toLowerCase().replace(/^https?:\/\/(dx\.)?doi\.org\//, "").trim();
+  const doisYa = new Set(estado.registros.filter(g => g.tipo === "publicacion").map(doiNorm).filter(d => d && !d.includes("[verificar]")));
+  estado.registros = sumar ? estado.registros.concat(regs.filter(g => !(g.tipo === "publicacion" && doisYa.has(doiNorm(g))))) : regs;
   pintarRevision();
 }
 function marcarVerificar(s){ return escapeHtml(s).replace(/\[VERIFICAR\]/g, '<span class="verificar">[VERIFICAR]</span>'); }
@@ -381,7 +400,7 @@ function resumenRegistro(g){
   const corto = s => String(s || "").split(/[(,]/)[0].trim();
   switch (g.tipo) {
     case "tesis": return [g.doctorando, g.titulo].filter(Boolean).join(" · ");
-    case "contrato_personal": return [g.persona, g.tipo_con].filter(Boolean).join(" · ");
+    case "contrato_personal": return [g.persona, g.tipo_con, g.fuente].filter(Boolean).join(" · ");
     case "transferencia": return [corto(g.subtipo), g.titulo].filter(Boolean).join(" · ");
     case "colaboracion_externa": return [g.entidad, g.pais, g.tipo_colab].filter(Boolean).join(" · ");
     case "contacto_centro": return [g.centro, g.motivo, g.resultado].filter(Boolean).join(" · ");
@@ -413,12 +432,12 @@ function pintarRevision(){
     if (!idx.length) return;
     const h = document.createElement("h3"); h.textContent = nombre + " (" + idx.length + ")"; lr.appendChild(h);
     const tabla = document.createElement("table");
-    tabla.innerHTML = "<tr><th>Tipo</th><th>Resumen</th><th>Adjuntos</th><th></th></tr>";
+    tabla.innerHTML = "<tr><th>Tipo</th><th>Resumen</th><th>Producto</th><th></th></tr>";
     idx.forEach(([g, i]) => {
       const tr = document.createElement("tr");
       const extra = (String(g.coautoria || "").toLowerCase().startsWith("s")) ? ' <span class="pill">coautoría interna</span>' : "";
       const pend = Object.values(g).some(v => typeof v === "string" && v.includes("[VERIFICAR]")) ? ' <span class="verificar">[VERIFICAR]</span>' : "";
-      const adj = (g.adjuntos || []).map(a => `<span class="adj">📎 ${escapeHtml(a.nombre)}${a.estado !== "guardado" ? " · " + escapeHtml(a.estado) : ""}</span>`).join("") || '<span class="adj">—</span>';
+      const adj = htmlProducto(g);
       const dups = duplicadosDe(g);
       if (dups.length) nDup++;
       tr.innerHTML = `<td>${TIPOS[g.tipo].etiq}</td><td>${marcarVerificar(resumenRegistro(g) || "(sin título)")}${extra}${pend}${avisoDupHtml(dups)}</td><td>${adj}</td>
@@ -484,7 +503,7 @@ function crearFormulario(tipoInicial, valores, alGuardar, alCancelar, textoBoton
     avisoForm();
     let inpAdj = null;
     if (conAdjuntos) {
-      const l = document.createElement("label"); l.textContent = "Adjuntar documentos (irán a «" + CARPETA_MATERIAL[TIPOS[tipo].bloque] + "»)"; caja.appendChild(l);
+      const l = document.createElement("label"); l.textContent = "Documento que lo acredita (irá a «" + CARPETA_PRODUCTOS + "»)"; caja.appendChild(l);
       inpAdj = document.createElement("input"); inpAdj.type = "file"; inpAdj.multiple = true; caja.appendChild(inpAdj);
     }
     const bOk = document.createElement("button"); bOk.className = "btn mini"; bOk.textContent = textoBoton;
@@ -527,7 +546,7 @@ let esVentanaPrincipal = true; try { esVentanaPrincipal = (window.self === windo
 let carpeta = null, carpetaOk = false;
 const NOMBRE_CARPETA = "app_indicadores";
 const CARPETA_INFORMES = "Informes del grupo";
-const INFORMES = { csv: "QUALIKER_indicadores_grupo.csv", tr: "QUALIKER_transferencia_grupo.xlsx", red: "QUALIKER_colaboraciones_contactos_grupo.xlsx" };
+const INFORMES = { ind: "QUALIKER_indicadores_grupo.xlsx", tr: "QUALIKER_transferencia_grupo.xlsx", red: "QUALIKER_colaboraciones_contactos_grupo.xlsx", doc: "QUALIKER_como_vamos.docx" };
 function idb(modo, fn){
   const req = indexedDB.open("qualiker", 1);
   req.onupgradeneeded = () => req.result.createObjectStore("kv");
@@ -613,6 +632,9 @@ function avisoSalida(t){ const s = document.getElementById("salida"); s.style.di
 async function descargar(nombre, contenido, tipo, subcarpeta){
   /* 1) directo a la carpeta OneDrive conectada · 2) entrega de la versión web · 3) descarga clásica */
   if (await guardarEnCarpeta(nombre, contenido, subcarpeta)) return "guardado";
+  return descargarSolo(nombre, contenido, tipo);
+}
+async function descargarSolo(nombre, contenido, tipo){
   const blob = contenido instanceof Blob ? contenido : new Blob([contenido], { type: tipo });
   if (window.claude && typeof window.claude.use === "function") {
     try {
@@ -639,15 +661,19 @@ function mesCarpeta(){
   const t = normTxt(val("mes")), i = MESES.findIndex(m => t.includes(m)), y = (t.match(/20\d\d/) || [""])[0];
   return (i >= 0 && y) ? `${y}-${String(i + 1).padStart(2, "0")} ${MESES[i]}` : (slug(val("mes"), 30) || "sin mes");
 }
+function nombreAdjunto(reg, original){
+  return [etiqLinea(), slug(val("mes"), 20), slug(TIPOS[reg.tipo].etiq, 20), slug(reg.titulo || reg.entidad || reg.centro || reg.doctorando || reg.persona || "", 40), String(original).replace(/[\\/:*?"<>|]/g, "_")].filter(Boolean).join("_");
+}
 async function adjuntarArchivos(reg, files){
-  const bloque = TIPOS[reg.tipo].bloque, sub = CARPETA_MATERIAL[bloque];
   reg.adjuntos = reg.adjuntos || [];
   for (const f of files) {
-    const nombre = [etiqLinea(), slug(val("mes"), 20), slug(TIPOS[reg.tipo].etiq, 20), slug(reg.titulo || reg.entidad || reg.centro || reg.doctorando || reg.persona || "", 40), f.name.replace(/[\\/:*?"<>|]/g, "_")].filter(Boolean).join("_");
-    const res = await descargar(nombre, f, f.type || "application/octet-stream", sub);
-    reg.adjuntos.push({ nombre, carpeta: sub, original: f.name, estado: res === "guardado" ? "guardado" : (res === "descargado" ? "descargado: muévelo a «" + sub + "»" : "no guardado") });
+    const nombre = nombreAdjunto(reg, f.name);
+    if (carpeta && carpetaOk && await guardarEnCarpeta(nombre, f, CARPETA_PRODUCTOS)) { reg.adjuntos.push({ nombre, carpeta: CARPETA_PRODUCTOS, original: f.name, estado: "guardado" }); continue; }
+    if (f.size <= MAX_DENTRO) { reg.adjuntos.push({ nombre, carpeta: CARPETA_PRODUCTOS, original: f.name, estado: "va dentro de tu archivo", tipo: f.type || "application/octet-stream", tam: f.size, data: await leerBase64(f) }); continue; }
+    const r = await descargarSolo(nombre, f, f.type || "application/octet-stream");
+    reg.adjuntos.push({ nombre, carpeta: CARPETA_PRODUCTOS, original: f.name, estado: r === "descargado" ? "muy grande: se ha descargado, súbelo tú a «" + CARPETA_PRODUCTOS + "»" : "no guardado" });
   }
-  avisoSalida(reg.adjuntos.length + " adjunto(s) en este registro. " + (carpeta ? "" : "Sin carpeta conectada: los archivos se han descargado con el nombre ya puesto; muévelos a la subcarpeta «" + sub + "» del OneDrive del grupo."));
+  avisoSalida(reg.adjuntos.length + " documento(s) en este registro.");
 }
 
 /* ---------- lo que ya hay en el grupo: lee los JSON de la carpeta y avisa de posibles duplicados ---------- */
@@ -658,7 +684,7 @@ const TIPOS_RED = ["colaboracion_externa", "contacto_centro"];
 function claveRegistro(g){
   switch (g.tipo) {
     case "tesis": return normTxt(g.doctorando) || normTxt(g.titulo);
-    case "contrato_personal": return normTxt(g.persona);
+    case "contrato_personal": return normTxt([g.persona, sinVerificar(g.fuente)].join(" "));   /* uno por persona y fuente de financiación */
     case "colaboracion_externa": return normTxt(g.entidad);
     case "contacto_centro": return normTxt(g.centro);
     default: return normTxt(g.titulo);
@@ -713,30 +739,22 @@ function detalleRegistro(g){
 async function jsonDeCarpeta(dir, ruta, prof, salida){
   for await (const h of dir.values()) {
     if (h.kind === "directory") {
-      if (prof < 2 && !/^(Material de |Informes del grupo|_)/i.test(h.name)) await jsonDeCarpeta(h, ruta + h.name + "/", prof + 1, salida);
+      if (prof < 2 && !/^(Material de |Informes del grupo|Productos|_)/i.test(h.name)) await jsonDeCarpeta(h, ruta + h.name + "/", prof + 1, salida);
     } else if (/\.json$/i.test(h.name)) {
       salida.push({ nombre: ruta + h.name, archivo: () => h.getFile() });
     }
   }
 }
 async function cargarGrupo(fuentes, origen){
-  const regs = [], archivos = [], ilegibles = [], vistos = new Set();
-  for (const f of fuentes) {
-    let d;
-    try { d = JSON.parse(await (await f.archivo()).text()); } catch (e) { ilegibles.push(f.nombre); continue; }
-    if (!d || !Array.isArray(d.registros)) continue;
-    archivos.push(f.nombre);
-    d.registros.map(normalizarRegistro).filter(Boolean).forEach(g => {
-      const x = { g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "", archivo: f.nombre, clave: claveRegistro(g) };
-      const firma = [g.tipo, x.clave || JSON.stringify(g), normTxt(x.persona)].join("|");
-      if (vistos.has(firma)) return;   /* el mismo registro, guardado por la misma persona en varios archivos */
-      vistos.add(firma); regs.push(x);
-    });
-  }
-  Object.assign(grupo, { leido: true, regs, archivos, ilegibles, origen, hora: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) });
-  document.getElementById("msgGrupo").textContent = "";
+  const { regs, ilegibles, archivos } = await registrosDelGrupo(fuentes);
+  regs.forEach(x => { x.clave = claveRegistro(x.g); });
+  Object.assign(grupo, { leido: true, regs, archivos, ilegibles, origen, fuentes, hora: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) });
+  const msg = document.getElementById("msgGrupo");
+  msg.textContent = "";
+  pintarComoVamos();
   pintarGrupo();
   pintarRevision();
+  if (carpetaOk) { const n = await sacarAdjuntos(regs.map(x => x.g), false); if (n) msg.textContent = n + " documento(s) llevados a «" + CARPETA_PRODUCTOS + "»."; }
 }
 function pintarGrupo(){
   const z = document.getElementById("zonaGrupo");
@@ -816,27 +834,40 @@ function plantillaTexto(){
 document.getElementById("btnPlantilla").addEventListener("click", () => avisoSalida(plantillaTexto()));
 document.getElementById("btnCopiarPlantilla").addEventListener("click", () => { navigator.clipboard.writeText(plantillaTexto()).then(() => avisoSalida(plantillaTexto() + "\n[Copiado al portapapeles]")); });
 const firmaReg = g => g.tipo + "|" + (claveRegistro(g) || JSON.stringify(g));
+function contenidoJSON(){ return JSON.stringify({ linea: val("linea"), mes: val("mes"), persona: val("persona"), version: 4, actualizacion: estado.actualizacion, registros: estado.registros }, null, 1); }
 document.getElementById("btnJSON").addEventListener("click", async () => {
   if (!val("persona").trim()) { avisoSalida("Escribe arriba tu nombre en «Quién rellena» antes de guardar: el archivo lleva tu nombre."); document.getElementById("persona").focus(); return; }
   const nombre = nombreBase() + ".json", sub = mesCarpeta();
-  let unidos = 0;
-  if (estado.archivoCargado !== nombre) {   /* ya hay un archivo tuyo de este mes y no lo has cargado: se une, no se pisa */
-    const prev = await leerJSONdeCarpeta(nombre, sub);
-    if (prev && Array.isArray(prev.registros)) {
-      const ya = new Set(estado.registros.map(firmaReg));
-      const antes = prev.registros.map(normalizarRegistro).filter(Boolean).filter(g => !ya.has(firmaReg(g)));
-      unidos = antes.length;
-      estado.registros = antes.concat(estado.registros);
-      SECS.forEach(([k]) => { const a = String((prev.actualizacion || {})[k] || "").trim(), b = String(estado.actualizacion[k] || "").trim(); estado.actualizacion[k] = (a && b && a !== b) ? a + "\n" + b : (b || a); });
-      pintarRevision();
+  if (carpeta && await permisoCarpeta()) {
+    let unidos = 0;
+    if (estado.archivoCargado !== nombre) {   /* ya hay un archivo tuyo de este mes y no lo has cargado: se une, no se pisa */
+      const prev = await leerJSONdeCarpeta(nombre, sub);
+      if (prev && Array.isArray(prev.registros)) {
+        const ya = new Set(estado.registros.map(firmaReg));
+        const antes = prev.registros.map(normalizarRegistro).filter(Boolean).filter(g => !ya.has(firmaReg(g)));
+        unidos = antes.length;
+        estado.registros = antes.concat(estado.registros);
+        SECS.forEach(([k]) => { const a = String((prev.actualizacion || {})[k] || "").trim(), b = String(estado.actualizacion[k] || "").trim(); estado.actualizacion[k] = (a && b && a !== b) ? a + "\n" + b : (b || a); });
+      }
+    }
+    const sacados = await sacarAdjuntos(estado.registros, true);
+    pintarRevision();
+    if (await guardarEnCarpeta(nombre, contenidoJSON(), sub)) {
+      estado.archivoCargado = nombre;
+      document.getElementById("pasoSubir").hidden = true;
+      avisoSalida("Guardado en la carpeta del grupo: " + carpeta.name + " / " + sub + " / " + nombre +
+        (unidos ? "\nYa tenías un archivo de este mes: se han unido sus " + unidos + " registro(s) con los nuevos." : "") +
+        (sacados ? "\n" + sacados + " documento(s) guardado(s) en «" + CARPETA_PRODUCTOS + "»." : ""));
+      return;
     }
   }
-  const res = await descargar(nombre, JSON.stringify({ linea: val("linea"), mes: val("mes"), persona: val("persona"), actualizacion: estado.actualizacion, registros: estado.registros }, null, 2), "application/json", sub);
-  if (res === "guardado") {
-    estado.archivoCargado = nombre;
-    avisoSalida("Guardado en la carpeta del grupo: " + carpeta.name + " / " + sub + " / " + nombre + (unidos ? "\nYa tenías un archivo de este mes: se han unido sus " + unidos + " registro(s) con los nuevos." : ""));
-  } else if (res === "descargado") {
-    avisoSalida("Se ha descargado " + nombre + ". Súbelo a OneDrive, a QUALIKER_2026_29 / " + NOMBRE_CARPETA + " / " + sub + ". Si ya hay uno con ese nombre, sustitúyelo.");
+  const d = new Date(), dd = n => String(n).padStart(2, "0");
+  const nombreDesc = nombreBase() + "_" + dd(d.getDate()) + "-" + dd(d.getMonth() + 1) + "_" + dd(d.getHours()) + dd(d.getMinutes()) + ".json";
+  const res = await descargarSolo(nombreDesc, contenidoJSON(), "application/json");
+  if (res === "descargado") {
+    const dentro = estado.registros.reduce((s, g) => s + (g.adjuntos || []).filter(a => a.data).length, 0);
+    document.getElementById("pasoSubir").hidden = false;
+    avisoSalida("Se ha descargado " + nombreDesc + (dentro ? ", con " + dentro + " documento(s) dentro" : "") + ".\nÚltimo paso: arrástralo a la carpeta del grupo (enlace debajo). Puedes guardar más veces: cada archivo lleva la fecha y la app se queda con lo más reciente.");
   }
 });
 
@@ -883,7 +914,7 @@ function csvInforme(regs){
 /* ---------- Excel (.xlsx) sin librerías externas ---------- */
 const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
 function crc32(u8){ let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
-function zipStore(files){
+function zipStore(files, tipo){
   const enc = new TextEncoder(); const partes = []; const central = []; let off = 0;
   const u16 = v => [v & 255, (v >>> 8) & 255], u32 = v => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
   files.forEach(f => {
@@ -895,7 +926,7 @@ function zipStore(files){
   });
   const tamCentral = central.reduce((s, p) => s + p.length, 0);
   const fin = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(tamCentral), ...u32(off), ...u16(0)]);
-  return new Blob([...partes, ...central, fin], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  return new Blob([...partes, ...central, fin], { type: tipo || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
 const xmlEsc = s => String(s ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const colL = i => { let s = ""; i++; while (i) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
@@ -909,6 +940,7 @@ function hojaXML(h){
     f.forEach((v, c) => {
       const ref = colL(c) + (r + 1), s = String(v ?? "").slice(0, 32000);
       if (r === 0) { x += `<c r="${ref}" t="inlineStr" s="1"><is><t xml:space="preserve">${xmlEsc(s)}</t></is></c>`; return; }
+      if (v && typeof v === "object" && v.f) { x += `<c r="${ref}" s="${v.s || 2}"><f>${xmlEsc(v.f)}</f><v>${v.v}</v></c>`; return; }
       if (/^https?:\/\/\S+$/.test(s.trim()) && s.length < 250) {
         const u = s.trim().replace(/"/g, '""');
         x += `<c r="${ref}" t="str" s="3"><f>${xmlEsc(`HYPERLINK("${u}","${u}")`)}</f><v>${xmlEsc(s.trim())}</v></c>`; return;
@@ -930,7 +962,7 @@ function crearXLSX(hojas){
     { name: "_rels/.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
     { name: "xl/workbook.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + hojas.map((h, i) => `<sheet name="${nombreHoja(h.nombre)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("") + "</sheets></workbook>" },
     { name: "xl/_rels/workbook.xml.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + hojas.map((h, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("") + `<Relationship Id="rId${hojas.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
-    { name: "xl/styles.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><u/><sz val="11"/><color rgb="FF0563C1"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF473A70"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
+    { name: "xl/styles.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><u/><sz val="11"/><color rgb="FF0563C1"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF473A70"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top"/></xf><xf numFmtId="10" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="2" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
     ...ws
   ]);
 }
@@ -992,36 +1024,38 @@ document.getElementById("importJSON").addEventListener("change", e => {
 
 /* ---------- informe del grupo: un CSV y dos Excel, siempre con el mismo nombre y en el mismo sitio ---------- */
 async function registrosDelGrupo(fuentes){
-  const porFirma = new Map(), ilegibles = []; let n = 0;
+  const porFirma = new Map(), ilegibles = [], archivos = []; let n = 0;
   for (const f of fuentes) {
     let d, t = 0;
     try { const a = await f.archivo(); t = a.lastModified || 0; d = JSON.parse(await a.text()); } catch (e) { ilegibles.push(f.nombre); continue; }
     if (!d || !Array.isArray(d.registros)) continue;
-    n++;
+    n++; archivos.push(f.nombre);
     d.registros.map(normalizarRegistro).filter(Boolean).forEach(g => {
-      const x = { g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "", t };
-      const firma = firmaReg(g) + "|" + normTxt(x.persona);   /* lo mismo de la misma persona en varios meses: vale la versión más reciente */
+      const x = { g, linea: d.linea || "", mes: d.mes || "", persona: d.persona || "", t, archivo: f.nombre };
+      const firma = firmaReg(g) + "|" + normTxt(x.persona);   /* lo mismo de la misma persona en varios archivos: vale la versión más reciente */
       const prev = porFirma.get(firma);
       if (!prev || t >= prev.t) porFirma.set(firma, x);
     });
   }
-  return { regs: [...porFirma.values()], n, ilegibles };
+  return { regs: [...porFirma.values()], n, ilegibles, archivos };
 }
 async function generarInforme(fuentes, origen){
   const msg = document.getElementById("msgCons");
   msg.textContent = "Leyendo…";
-  const { regs, n, ilegibles } = await registrosDelGrupo(fuentes);
-  const resumen = {};
-  regs.forEach(x => { const k = (x.linea || "(sin línea)") + " · " + TIPOS[x.g.tipo].etiq; resumen[k] = (resumen[k] || 0) + 1; });
+  const { regs, n, ilegibles } = await registrosDelGrupo(fuentes || []);
+  if (!regs.length) { msg.textContent = "No se han encontrado registros."; return msg.textContent; }
+  const D = informeDatos(regs);
+  const sac = carpetaOk ? await sacarAdjuntos(regs.map(x => x.g), false) : 0;
   const hechos = [];
-  if (hayTipo(regs, g => TIPOS[g.tipo].bloque === "ind")) { await descargar(INFORMES.csv, "\uFEFF" + csvInforme(regs), "text/csv;charset=utf-8", CARPETA_INFORMES); hechos.push(INFORMES.csv); }
-  if (hayTipo(regs, g => g.tipo === "transferencia")) { await descargar(INFORMES.tr, xlsxTransferencia(regs), undefined, CARPETA_INFORMES); hechos.push(INFORMES.tr); }
-  if (hayTipo(regs, g => g.tipo === "colaboracion_externa" || g.tipo === "contacto_centro")) { await descargar(INFORMES.red, xlsxRed(regs), undefined, CARPETA_INFORMES); hechos.push(INFORMES.red); }
-  avisoSalida("INFORME DEL GRUPO: " + regs.length + " registros de " + n + " archivo(s) de " + origen + "\n" +
-    Object.entries(resumen).sort().map(([k, v]) => "  " + k + ": " + v).join("\n") +
-    (ilegibles.length ? "\nArchivos ilegibles: " + ilegibles.join(", ") : "") +
-    (hechos.length ? "\n\nActualizado" + (carpetaOk ? " en «" + CARPETA_INFORMES + "»" : "") + ": " + hechos.join(", ") + ". Sustituye a la versión anterior." : ""));
-  msg.textContent = hechos.length ? "Hecho." : "No se han encontrado registros.";
+  const poner = async (nombre, contenido, tipo) => { const r = await descargar(nombre, contenido, tipo, CARPETA_INFORMES); if (r !== "no guardado") hechos.push(nombre); };
+  await poner(INFORMES.doc, docxInforme(D), TIPO_DOCX);
+  if (hayTipo(regs, g => TIPOS[g.tipo].bloque === "ind")) await poner(INFORMES.ind, xlsxIndicadores(D));
+  if (hayTipo(regs, g => g.tipo === "transferencia")) await poner(INFORMES.tr, xlsxTransferencia(regs));
+  if (hayTipo(regs, g => TIPOS_RED.includes(g.tipo))) await poner(INFORMES.red, xlsxRed(regs));
+  const txt = "Informe del grupo: " + regs.length + " registros de " + n + " archivo(s) de " + origen + ". " + (carpetaOk ? "Actualizado en «" + CARPETA_INFORMES + "»: " : "Descargado: ") + hechos.join(", ") + "." +
+    (sac ? " " + sac + " documento(s) llevados a «" + CARPETA_PRODUCTOS + "»." : "") + (ilegibles.length ? " No se pudieron leer: " + ilegibles.join(", ") + "." : "");
+  msg.textContent = txt;
+  return txt;
 }
 document.getElementById("btnInforme").addEventListener("click", async () => {
   if (!puedeCarpeta) { document.getElementById("consolidar").click(); return; }
@@ -1038,6 +1072,332 @@ document.getElementById("consolidar").addEventListener("change", async e => {
   await generarInforme(files.map(f => ({ nombre: f.name, archivo: async () => f })), files.length === 1 ? "el archivo elegido" : "los archivos elegidos");
   e.target.value = "";
 });
+
+/* ---------- v4: publicaciones desde su DOI (Crossref, sin IA) ---------- */
+const RE_DOI = /\b10\.\d{4,9}\/[^\s"'<>]+/gi;
+function doisDe(t){ return [...new Set((String(t || "").match(RE_DOI) || []).map(d => d.replace(/[).,;:\]]+$/, "")))]; }
+function botonDOI(){
+  const n = doisDe(val("volcado")).length, b = document.getElementById("btnDOI");
+  b.hidden = !n;
+  b.textContent = n === 1 ? "Crear la publicación desde su DOI" : "Crear las " + n + " publicaciones desde sus DOI";
+}
+document.getElementById("volcado").addEventListener("input", botonDOI);
+const sinEtiquetas = s => String(s || "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+async function pubDesdeDOI(doi){
+  const r = await fetch("https://api.crossref.org/works/" + encodeURIComponent(doi));
+  if (!r.ok) throw new Error("no encontrado");
+  const m = (await r.json()).message || {};
+  const ini = g => String(g || "").split(/\s+/).filter(Boolean).map(p => p.split("-").map(q => q ? q[0].toUpperCase() + "." : "").join("-")).join(" ");
+  const aut = (m.author || []).map(a => a.family ? a.family + (a.given ? ", " + ini(a.given) : "") : (a.name || "")).filter(Boolean);
+  const autores = aut.length > 1 ? aut.slice(0, -1).join(", ") + ", & " + aut[aut.length - 1] : (aut[0] || "[VERIFICAR]");
+  const partes = (m["published-print"] || m["published-online"] || m.issued || {})["date-parts"];
+  const anio = partes && partes[0] && partes[0][0] ? String(partes[0][0]) : "[VERIFICAR]";
+  const publicada = !!(m["published-print"] || m["published-online"]);
+  const titulo = sinEtiquetas((m.title || [])[0]) || "[VERIFICAR]";
+  const revista = sinEtiquetas((m["container-title"] || [])[0] || m.publisher) || "[VERIFICAR]";
+  const vol = m.volume, num = m.issue, pag = m.page || m["article-number"];
+  const tipo_pub = { "journal-article": "Artículo indexado", "book": "Libro", "monograph": "Libro", "edited-book": "Libro", "book-chapter": "Capítulo" }[m.type] || "Otras";
+  return {
+    tipo: "publicacion", autores, titulo, tipo_pub, estado: publicada ? "Publicada" : "Aceptada", revista, anio,
+    base: "[VERIFICAR]", cuartil: "[VERIFICAR]", issn: (m.ISSN || m.ISBN || [])[0] || "", doi,
+    referencia: `${autores} (${anio}). ${titulo}. ${revista}${vol ? ", " + vol : ""}${num ? "(" + num + ")" : ""}${pag ? ", " + pag : ""}. https://doi.org/${doi}`,
+    coautoria: "[VERIFICAR]", miembros: "[VERIFICAR]", acreditacion: "https://doi.org/" + doi, adjuntos: []
+  };
+}
+document.getElementById("btnDOI").addEventListener("click", async () => {
+  const msg = document.getElementById("msgDOI"), lista = doisDe(val("volcado"));
+  const ya = new Set(estado.registros.filter(g => g.tipo === "publicacion").map(g => String(g.doi || "").toLowerCase()));
+  let ok = 0; const mal = [];
+  for (const d of lista) {
+    if (ya.has(d.toLowerCase())) continue;
+    msg.textContent = "Buscando " + d + "…";
+    try { estado.registros.push(await pubDesdeDOI(d)); ok++; }
+    catch (e) { mal.push(d); estado.registros.push({ tipo: "publicacion", doi: d, titulo: "[VERIFICAR]", autores: "[VERIFICAR]", estado: "[VERIFICAR]", acreditacion: "https://doi.org/" + d, adjuntos: [] }); }
+  }
+  msg.textContent = (ok ? ok + " publicación(es) rellenada(s) con los datos de Crossref. " : "") + (mal.length ? "Sin datos para " + mal.join(", ") + ": complétalas con «Editar». " : "") + "Míralas abajo.";
+  mostrarRevision(); pintarRevision();
+  document.getElementById("revision").scrollIntoView({ behavior: "smooth" });
+});
+
+/* ---------- v4: el producto (documento que acredita) ---------- */
+const lleno = v => { const s = String(v ?? "").trim(); return !!s && !s.includes("[VERIFICAR]"); };
+const CAMPOS_ENLACE = ["acreditacion", "doi", "enlace", "evidencia", "material"];
+const enlaceDe = g => CAMPOS_ENLACE.map(k => g[k]).find(lleno) || "";
+const necesitaProducto = g => g.tipo !== "contacto_centro";
+function tieneProducto(g, adj){ return (adj || g.adjuntos || []).length > 0 || !!enlaceDe(g); }
+function htmlProducto(g){
+  const adj = (g.adjuntos || []).map(a => `<span class="prod">📎 ${escapeHtml(a.original || a.nombre)}${a.estado && a.estado !== "guardado" ? " · " + escapeHtml(a.estado) : ""}</span>`).join("");
+  if (adj) return adj;
+  const e = enlaceDe(g);
+  if (e) return `<span class="prod">🔗 ${escapeHtml(e.length > 42 ? e.slice(0, 42) + "…" : e)}</span>`;
+  return necesitaProducto(g) ? '<span class="prod pend">pendiente de acreditar</span>' : '<span class="prod">—</span>';
+}
+function b64aBytes(b64){ const s = atob(b64); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; }
+function leerBase64(f){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1] || ""); r.onerror = () => rej(r.error); r.readAsDataURL(f); }); }
+async function existeEnCarpeta(nombre, sub){ try { await (await dirDe(sub, false)).getFileHandle(nombre); return true; } catch (e) { return false; } }
+/* los documentos que viajan dentro de un archivo se guardan en «Productos» cuando alguien tiene la carpeta conectada */
+async function sacarAdjuntos(regs, quitarDelArchivo){
+  if (!carpeta || !carpetaOk) return 0;
+  let n = 0;
+  for (const g of regs) for (const a of (g.adjuntos || [])) {
+    if (!a.data) continue;
+    let esta = await existeEnCarpeta(a.nombre, CARPETA_PRODUCTOS);
+    if (!esta && await guardarEnCarpeta(a.nombre, new Blob([b64aBytes(a.data)], { type: a.tipo || "application/octet-stream" }), CARPETA_PRODUCTOS)) { esta = true; n++; }
+    if (esta && quitarDelArchivo) { delete a.data; delete a.tipo; a.carpeta = CARPETA_PRODUCTOS; a.estado = "guardado"; }
+  }
+  return n;
+}
+
+/* ---------- v4: cómo vamos (recuento, semáforo, textos para la web e informe) ---------- */
+const PERIODO_INI = new Date(2026, 0, 1), PERIODO_FIN = new Date(2030, 0, 1);
+const anioDe = s => { const m = String(s || "").match(/(?:19|20)\d\d/); return m ? +m[0] : null; };
+const est = s => normTxt(s);
+const vigenteDesde2026 = g => !(anioDe(g.fin) && anioDe(g.fin) < 2026);
+const concedido = g => /concedid|finalizad/.test(est(g.estado));
+const competitivo = g => est(g.tipo_fin).startsWith("competitiv");
+const INDICADORES = [
+  { id: "pub", nombre: "Publicaciones", comp: 60, peso: 40, tipo: "publicacion",
+    cuenta: g => est(g.estado).startsWith("publicad") && !(anioDe(g.anio) && anioDe(g.anio) < 2026), anio: g => anioDe(g.anio) },
+  { id: "tesis", nombre: "Tesis defendidas", comp: 10, peso: 5, tipo: "tesis",
+    cuenta: g => est(g.estado).startsWith("defendid") && !(anioDe(g.anio) && anioDe(g.anio) < 2026), anio: g => anioDe(g.anio) },
+  { id: "con", nombre: "Contratos de personal investigador", comp: 25, peso: 5, tipo: "contrato_personal",
+    cuenta: vigenteDesde2026, anio: g => anioDe(g.inicio) },
+  { id: "proy", nombre: "Proyectos, contratos y convenios", comp: 25, peso: 0, tipo: "financiacion",
+    cuenta: g => concedido(g) && vigenteDesde2026(g), anio: g => anioDe(g.inicio) },
+  { id: "comp", nombre: "De ellos, proyectos competitivos", comp: 18, peso: 20, tipo: "financiacion", filtro: competitivo,
+    cuenta: g => competitivo(g) && concedido(g) && vigenteDesde2026(g), anio: g => anioDe(g.inicio) }
+];
+const CRITERIOS = "Solo cuenta lo firme: publicaciones publicadas desde 2026; tesis defendidas desde 2026; contratos de personal vigentes en 2026 o después, uno por persona y fuente de financiación (las prórrogas con la misma fuente no suman, según el Gobierno Vasco); proyectos, contratos y convenios concedidos y vigentes desde 2026. Los 18 competitivos están dentro de los 25: financiación pública obtenida en convocatoria con concurrencia y evaluación objetiva. Lo mismo registrado por varias personas se cuenta una vez.";
+function cuantoLleno(g){ return Object.values(g).filter(v => typeof v === "string" && lleno(v)).length; }
+function unicos(regs){
+  const out = [];
+  regs.forEach(x => {
+    const k = claveRegistro(x.g), q = quienCuando(x);
+    const u = k ? out.find(o => o.g.tipo === x.g.tipo && parecidos(k, o.clave, minimoDe(x.g.tipo))) : null;
+    if (u) {
+      if (!u.quien.includes(q)) u.quien.push(q);
+      if (cuantoLleno(x.g) > cuantoLleno(u.g)) u.g = x.g;
+      (x.g.adjuntos || []).forEach(a => { if (!u.adjuntos.some(b => b.nombre === a.nombre)) u.adjuntos.push(a); });
+      return;
+    }
+    out.push({ g: x.g, clave: k, quien: [q], linea: x.linea, persona: x.persona, mes: x.mes, adjuntos: (x.g.adjuntos || []).slice() });
+  });
+  return out;
+}
+const LINEAS = ["Línea 1", "Línea 2", "Línea 3", "Línea 4", "Línea 5", "Fuera de líneas"];
+const fmt = (n, d) => Number(n).toLocaleString("es-ES", { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+const fechaLarga = d => d.toLocaleDateString("es-ES", { day: "2-digit", month: "long", year: "numeric" });
+const RITMO = { verde: "al ritmo", ambar: "algo por debajo", rojo: "por debajo" };
+function informeDatos(regs){
+  const hoy = new Date();
+  const frac = Math.max(0, Math.min(1, (hoy - PERIODO_INI) / (PERIODO_FIN - PERIODO_INI)));
+  const U = unicos(regs);
+  const ind = INDICADORES.map(I => {
+    const rel = U.filter(u => u.g.tipo === I.tipo && (!I.filtro || I.filtro(u.g)));
+    const cuentan = rel.filter(u => I.cuenta(u.g)), noAun = rel.filter(u => !I.cuenta(u.g));
+    const pct = cuentan.length / I.comp;
+    return { I, cuentan, noAun, pct, sem: pct >= frac ? "verde" : (pct >= frac * 0.6 ? "ambar" : "rojo") };
+  });
+  const pesoTotal = INDICADORES.reduce((s, I) => s + I.peso, 0);
+  const puntos = ind.reduce((s, r) => s + r.I.peso * Math.min(1, r.pct), 0);
+  const sinProducto = U.filter(u => necesitaProducto(u.g) && !tieneProducto(u.g, u.adjuntos));
+  const verificar = U.filter(u => Object.values(u.g).some(v => typeof v === "string" && v.includes("[VERIFICAR]")));
+  const personas = {};
+  regs.forEach(x => { const p = x.persona || "sin nombre"; personas[p] = personas[p] || new Set(); personas[p].add([x.linea, x.mes].filter(Boolean).join(", ")); });
+  const cuentaDe = id => ind.find(r => r.I.id === id).cuentan;
+  const porLinea = LINEAS.map(l => {
+    const de = u => u.linea === l;
+    return [l, cuentaDe("pub").filter(de).length, cuentaDe("tesis").filter(de).length, cuentaDe("con").filter(de).length, cuentaDe("proy").filter(de).length, cuentaDe("comp").filter(de).length,
+      U.filter(u => de(u) && u.g.tipo === "congreso").length, U.filter(u => de(u) && u.g.tipo === "transferencia").length, U.filter(u => de(u) && TIPOS_RED.includes(u.g.tipo)).length];
+  }).filter(f => f.slice(1).some(Boolean));
+  return { hoy, frac, U, ind, puntos, pesoTotal, sinProducto, verificar, personas, porLinea, nRegs: regs.length };
+}
+function refPublicacion(g){
+  if (lleno(g.referencia)) return g.referencia.trim();
+  const doi = lleno(g.doi) ? (/^https?:/i.test(g.doi) ? g.doi.trim() : "https://doi.org/" + g.doi.trim().replace(/^doi:\s*/i, "")) : "";
+  return [lleno(g.autores) ? g.autores.trim() + (lleno(g.anio) ? " (" + g.anio + ")." : ".") : "", lleno(g.titulo) ? g.titulo.trim() + "." : "", lleno(g.revista) ? g.revista.trim() + "." : "", doi].filter(Boolean).join(" ");
+}
+function textosWeb(D){
+  const ip = D.ind.find(r => r.I.id === "pub");
+  const pubs = ip.cuentan.concat(ip.noAun.filter(u => /aceptad/.test(est(u.g.estado))));
+  const prod = pubs.map(u => "- " + (refPublicacion(u.g) || u.g.titulo || "[VERIFICAR] sin título") + (/aceptad/.test(est(u.g.estado)) ? " (en prensa)" : "")).join("\n");
+  const proy = D.ind.find(r => r.I.id === "proy").cuentan.map(u => { const g = u.g; return "- " + [g.titulo, [g.entidad, g.convocatoria].filter(lleno).join(", "), [g.inicio, g.fin].filter(lleno).join(" a "), lleno(g.ip) ? "IP: " + g.ip : ""].filter(lleno).join(". ") + "."; }).join("\n");
+  const tr = D.U.filter(u => u.g.tipo === "transferencia" && !est(u.g.web).startsWith("no"));
+  const VIS = /^(divulgacion|charla|evento|material divulgativo)/;
+  const lineaTr = u => { const g = u.g; return "- " + [g.titulo, g.descripcion, lleno(g.enlace) ? g.enlace : g.material].filter(lleno).join(". ") + (est(g.web).startsWith("si") ? "" : " [decidir si va a la web]"); };
+  const cong = D.U.filter(u => u.g.tipo === "congreso").map(u => { const g = u.g; return "- " + [g.titulo, [g.congreso, g.lugar, g.fecha].filter(lleno).join(", ")].filter(lleno).join(". ") + "."; });
+  const col = D.U.filter(u => u.g.tipo === "colaboracion_externa").map(u => "- " + [u.g.entidad, u.g.pais].filter(lleno).join(", ") + (lleno(u.g.tipo_colab) ? ": " + u.g.tipo_colab : "") + " [pedir permiso antes de usar su logotipo]").join("\n");
+  const o = s => s || "(nada todavía)";
+  return [
+    ["Producción científica: publicaciones desde 2026", o(prod)],
+    ["Proyectos concedidos: título, financiador, años y personas", o(proy)],
+    ["Transferencia: instrumentos, guías, programas, cursos", o(tr.filter(u => !VIS.test(est(u.g.subtipo))).map(lineaTr).join("\n"))],
+    ["Visibilidad: medios, charlas, eventos y congresos", o(tr.filter(u => VIS.test(est(u.g.subtipo))).map(lineaTr).concat(cong).join("\n"))],
+    ["Colaboraciones", o(col)]
+  ];
+}
+function resumenTexto(D){
+  return D.ind.map(r => `${r.I.nombre}: cuentan ${r.cuentan.length} de ${r.I.comp} (${fmt(r.pct * 100)} %), ${RITMO[r.sem]}; registrados que aún no cuentan: ${r.noAun.length}`).join("\n") +
+    `\nLo esperable a ${fechaLarga(D.hoy)}: ${fmt(D.frac * 100)} % de cada compromiso.\nPuntos con la fórmula del Excel del grupo: ${fmt(D.puntos, 1)} de ${D.pesoTotal}.\nPendiente de acreditar: ${D.sinProducto.length}. Con datos por completar: ${D.verificar.length}.`;
+}
+function datosCompactos(D){
+  return D.U.map(u => {
+    const o = { tipo: u.g.tipo, linea: u.linea, registrado_por: u.quien.join(" / ") };
+    TIPOS[u.g.tipo].campos.forEach(([id]) => { if (lleno(u.g[id])) o[id] = String(u.g[id]).slice(0, 300); });
+    o.producto = tieneProducto(u.g, u.adjuntos) ? "sí" : "pendiente de acreditar";
+    return JSON.stringify(o);
+  }).join("\n");
+}
+function promptGrupo(D, pregunta){
+  return `Eres el asistente del grupo de investigación QUALIKER (IT1922-26, grupo consolidado del Gobierno Vasco, periodo 2026-2029). Abajo tienes el recuento que ha hecho la app de indicadores y todos los registros del grupo (un JSON por línea, sin los documentos adjuntos). Responde en español a la pregunta usando SOLO estos datos. Si algo no está, dilo y márcalo [VERIFICAR]. No inventes cifras, títulos ni referencias. Sé concreto: cifras, títulos, qué falta y quién lo tiene.
+
+CRITERIOS DE RECUENTO:
+${CRITERIOS}
+
+PREGUNTA:
+${pregunta}
+
+RECUENTO DE LA APP:
+${resumenTexto(D)}
+
+REGISTROS:
+${datosCompactos(D)}
+`;
+}
+function agruparPorPersona(lista){
+  const m = {};
+  lista.forEach(u => { const p = (u.quien[0] || "sin nombre").replace(/\s*\(.*$/, ""); (m[p] = m[p] || []).push(TIPOS[u.g.tipo].etiq + " «" + (resumenRegistro(u.g) || "sin título") + "»"); });
+  return Object.entries(m).sort((a, b) => a[0].localeCompare(b[0], "es"));
+}
+function pintarComoVamos(){
+  const z = document.getElementById("zonaComoVamos");
+  if (!grupo.regs.length) { z.innerHTML = ""; return; }
+  const D = informeDatos(grupo.regs); grupo.D = D;
+  const filas = D.ind.map(r => `<tr><td>${escapeHtml(r.I.nombre)}</td><td class="n">${r.I.comp}</td><td class="n"><b>${r.cuentan.length}</b></td><td class="n">${fmt(r.pct * 100)} %</td><td><span class="sem ${r.sem}">${RITMO[r.sem]}</span></td><td class="n">${r.noAun.length}</td></tr>`).join("");
+  const lin = D.porLinea.map(f => `<tr><td>${escapeHtml(f[0])}</td>${f.slice(1).map(v => `<td class="n">${v}</td>`).join("")}</tr>`).join("");
+  const lista = l => `<ul class="nota lista">${agruparPorPersona(l).map(([p, v]) => `<li><b>${escapeHtml(p)}</b> (${v.length})<ul>${v.map(i => `<li>${marcarVerificar(i)}</li>`).join("")}</ul></li>`).join("")}</ul>`;
+  const quien = Object.entries(D.personas).sort((a, b) => a[0].localeCompare(b[0], "es")).map(([p, s]) => escapeHtml(p) + " (" + escapeHtml([...s].join("; ")) + ")").join(" · ");
+  const web = textosWeb(D);
+  z.innerHTML = `<div class="informe">
+    <h3>Semáforo a ${fechaLarga(D.hoy)}</h3>
+    <p class="nota">Lo esperable a hoy es un ${fmt(D.frac * 100)} % de cada compromiso (el periodo va de enero de 2026 a diciembre de 2029). ${escapeHtml(CRITERIOS)}</p>
+    <table><tr><th>Indicador</th><th class="n">Compromiso</th><th class="n">Cuentan</th><th class="n">%</th><th>Ritmo</th><th class="n">Registrados que aún no cuentan</th></tr>${filas}</table>
+    <p class="puntos">Puntos con la fórmula del Excel del grupo: <b>${fmt(D.puntos, 1)}</b> de ${D.pesoTotal}. Pesos: publicaciones 40, tesis 5, contratos 5 y proyectos competitivos 20, cada uno por lo que cuenta entre lo comprometido.</p>
+    ${lin ? `<h3>Por línea (lo que cuenta)</h3><table><tr><th>Línea</th><th class="n">Publ.</th><th class="n">Tesis</th><th class="n">Contratos</th><th class="n">Proyectos</th><th class="n">Comp.</th><th class="n">Congresos</th><th class="n">Transf.</th><th class="n">Colab. y contactos</th></tr>${lin}</table>` : ""}
+    <h3>Pendiente de acreditar (${D.sinProducto.length})</h3>
+    ${D.sinProducto.length ? `<p class="nota">Registros sin documento ni enlace. No hace falta pedir nada antes de que lo pida la plataforma; esto solo dice qué falta.</p>${lista(D.sinProducto)}` : '<p class="nota">Todo lo registrado tiene documento o enlace.</p>'}
+    <h3>Con datos por completar (${D.verificar.length})</h3>
+    ${D.verificar.length ? lista(D.verificar) : '<p class="nota">Nada marcado [VERIFICAR].</p>'}
+    <h3>Quién ha guardado</h3><p class="nota">${quien}</p>
+    <h3>Para actualizar la web</h3>
+    <p class="nota">Producción, transferencia y visibilidad, listas para copiar. Cada proyecto lleva título, financiador, años y personas, como se acordó el 30 de octubre.</p>
+    ${web.map(([t, txt]) => `<label>${escapeHtml(t)}</label><div class="textoweb">${escapeHtml(txt)}</div>`).join("")}
+    <button class="btn sec mini" id="btnCopiarWeb" type="button">Copiar los textos para la web</button>
+    <h3>Pregúntale a tu IA</h3>
+    <textarea id="preguntaIA" style="min-height:60px">Hazme un resumen detallado de cómo vamos con los indicadores: qué cuenta ya, qué falta para ir al ritmo, qué está pendiente de acreditar y qué podemos actualizar ya en la web (producción, transferencia y visibilidad).</textarea>
+    <button class="btn sec mini" id="btnCopiarIA" type="button">Copiar la pregunta con los datos del grupo</button>
+    <div class="exportar">
+      <button class="btn mini" id="btnWordInforme" type="button">Descargar el informe en Word</button>
+      ${carpetaOk ? '<button class="btn mini sec" id="btnActualizarInformes" type="button">Actualizar «Informes del grupo» (Word y Excel)</button>' : ""}
+      <span id="msgComoVamos" class="exito"></span>
+    </div>
+  </div>`;
+  const msg = document.getElementById("msgComoVamos");
+  const copiar = (t, ok) => navigator.clipboard.writeText(t).then(() => { msg.textContent = ok; }).catch(() => { msg.textContent = "No se pudo copiar: revisa los permisos del navegador."; });
+  document.getElementById("btnCopiarWeb").addEventListener("click", () => copiar(web.map(([t, txt]) => t.toUpperCase() + "\n" + txt).join("\n\n"), "Textos copiados."));
+  document.getElementById("btnCopiarIA").addEventListener("click", () => copiar(promptGrupo(D, val("preguntaIA")), "Copiado: pégalo en tu chatbot."));
+  document.getElementById("btnWordInforme").addEventListener("click", async () => { const r = await descargarSolo(INFORMES.doc, docxInforme(D), TIPO_DOCX); msg.textContent = r === "descargado" ? "Descargado." : ""; });
+  const bAct = document.getElementById("btnActualizarInformes");
+  if (bAct) bAct.addEventListener("click", async () => { msg.textContent = "Generando…"; msg.textContent = await generarInforme(grupo.fuentes, grupo.origen); });
+}
+
+/* ---------- v4: informe en Word (.docx) sin librerías ---------- */
+const TIPO_DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+function logoBytes(){ try { return b64aBytes(document.querySelector(".logochip img").src.split(",")[1]); } catch (e) { return null; } }
+function docxInforme(D){
+  const run = (t, o) => { o = o || {}; return `<w:r><w:rPr>${o.b ? "<w:b/>" : ""}${o.color ? `<w:color w:val="${o.color}"/>` : ""}${o.sz ? `<w:sz w:val="${o.sz}"/><w:szCs w:val="${o.sz}"/>` : ""}</w:rPr><w:t xml:space="preserve">${xmlEsc(t)}</w:t></w:r>`; };
+  const par = (t, o) => { o = o || {}; return `<w:p><w:pPr>${o.lista ? '<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>' : ""}${o.keep ? "<w:keepNext/>" : ""}<w:spacing w:before="${o.antes || 0}" w:after="${o.despues == null ? 120 : o.despues}"/></w:pPr>${t === "" ? "" : (Array.isArray(t) ? t.join("") : run(t, o))}</w:p>`; };
+  const tit = t => par(t, { b: true, sz: 26, antes: 240, despues: 80, keep: true });
+  const celda = (t, w, cab, der) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${cab ? '<w:shd w:val="clear" w:color="auto" w:fill="473A70"/>' : ""}</w:tcPr><w:p><w:pPr><w:spacing w:before="20" w:after="20"/>${der ? '<w:jc w:val="right"/>' : ""}</w:pPr>${run(String(t), cab ? { b: true, color: "FFFFFF", sz: 18 } : { sz: 18 })}</w:p></w:tc>`;
+  const bordes = ["top", "left", "bottom", "right", "insideH", "insideV"].map(b => `<w:${b} w:val="single" w:sz="4" w:space="0" w:color="BFBFBF"/>`).join("");
+  const tabla = (cab, filas, anchos, der) => `<w:tbl><w:tblPr><w:tblW w:w="${anchos.reduce((s, a) => s + a, 0)}" w:type="dxa"/><w:tblBorders>${bordes}</w:tblBorders><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="80" w:type="dxa"/><w:right w:w="80" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${anchos.map(a => `<w:gridCol w:w="${a}"/>`).join("")}</w:tblGrid>` +
+    `<w:tr><w:trPr><w:tblHeader/></w:trPr>${cab.map((c, i) => celda(c, anchos[i], true, der.includes(i))).join("")}</w:tr>` +
+    filas.map(f => `<w:tr><w:trPr><w:cantSplit/></w:trPr>${f.map((c, i) => celda(c, anchos[i], false, der.includes(i))).join("")}</w:tr>`).join("") + "</w:tbl>" + par("", { despues: 60 });
+  const lista = items => items.map(t => par(t, { lista: true, despues: 40 })).join("");
+  const logo = logoBytes();
+  const cx = 1097280, cy = 768893;
+  let body = "";
+  if (logo) body += `<w:p><w:pPr><w:spacing w:after="120"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="1" name="Logo QUALIKER"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="1" name="logo.jpeg"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId3"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+  body += par("Cómo vamos: indicadores de QUALIKER (IT1922-26)", { b: true, sz: 32, despues: 60 });
+  body += par(`Informe generado por la app de indicadores el ${fechaLarga(D.hoy)} con ${D.nRegs} registros de ${Object.keys(D.personas).length} personas.`, { despues: 200 });
+  body += tit("Semáforo de indicadores");
+  body += par(`Lo esperable a esta fecha es un ${fmt(D.frac * 100)} % de cada compromiso 2026-2029.`);
+  body += tabla(["Indicador", "Compromiso", "Cuentan", "%", "Ritmo", "Aún no cuentan"],
+    D.ind.map(r => [r.I.nombre, r.I.comp, r.cuentan.length, fmt(r.pct * 100) + " %", RITMO[r.sem], r.noAun.length]), [3138, 1300, 1000, 800, 1700, 1700], [1, 2, 3, 5]);
+  body += par(`Puntos con la fórmula del Excel del grupo: ${fmt(D.puntos, 1)} de ${D.pesoTotal} (publicaciones 40, tesis 5, contratos 5 y proyectos competitivos 20, cada uno por lo que cuenta entre lo comprometido).`);
+  if (D.porLinea.length) {
+    body += tit("Por línea (lo que cuenta)");
+    body += tabla(["Línea", "Publ.", "Tesis", "Contratos", "Proyectos", "Comp.", "Congresos", "Transf.", "Colab."], D.porLinea, [1700, 900, 800, 1000, 1000, 800, 1100, 1238, 1100], [1, 2, 3, 4, 5, 6, 7, 8]);
+  }
+  const porPersona = l => agruparPorPersona(l).map(([p, v]) => par(p + " (" + v.length + ")", { b: true, antes: 80, despues: 40, keep: true }) + lista(v)).join("");
+  body += tit(`Pendiente de acreditar (${D.sinProducto.length})`);
+  body += D.sinProducto.length ? par("Registros sin documento ni enlace. No hace falta pedir nada antes de que lo pida la plataforma; esto solo dice qué falta.") + porPersona(D.sinProducto) : par("Todo lo registrado tiene documento o enlace.");
+  body += tit(`Con datos por completar (${D.verificar.length})`);
+  body += D.verificar.length ? porPersona(D.verificar) : par("Nada marcado [VERIFICAR].");
+  body += tit("Quién ha guardado");
+  body += lista(Object.entries(D.personas).sort((a, b) => a[0].localeCompare(b[0], "es")).map(([p, s]) => p + " (" + [...s].join("; ") + ")"));
+  body += tit("Para actualizar la web");
+  textosWeb(D).forEach(([t, txt]) => { body += par(t, { b: true, antes: 120, despues: 60, keep: true }); body += lista(txt.split("\n").map(l => l.replace(/^- /, ""))); });
+  body += tit("Cómo se cuenta");
+  body += par(CRITERIOS, { sz: 18 });
+  body += '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr>';
+  const NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
+  const X = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const archivos = [
+    { name: "[Content_Types].xml", data: X + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/></Types>' },
+    { name: "_rels/.rels", data: X + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>' },
+    { name: "word/_rels/document.xml.rels", data: X + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>' + (logo ? '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.jpeg"/>' : "") + "</Relationships>" },
+    { name: "word/styles.xml", data: X + '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="21"/><w:szCs w:val="21"/><w:lang w:val="es-ES"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="264" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>' },
+    { name: "word/numbering.xml", data: X + '<w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="singleLevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="–"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="360" w:hanging="360"/></w:pPr></w:lvl></w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num></w:numbering>' },
+    { name: "word/document.xml", data: X + `<w:document ${NS}><w:body>${body}</w:body></w:document>` }
+  ];
+  if (logo) archivos.push({ name: "word/media/logo.jpeg", data: logo });
+  return zipStore(archivos, TIPO_DOCX);
+}
+
+/* ---------- v4: Excel de indicadores con la hoja General del Excel del grupo ---------- */
+function xlsxIndicadores(D){
+  const anios = [2026, 2027, 2028, 2029];
+  const aAnio = y => (y && y > 2026) ? Math.min(y, 2029) : 2026;
+  const filasG = D.ind.map((r, i) => {
+    const f = i + 2, tot = r.cuentan.length, tasa = Math.min(1, tot / r.I.comp);
+    const porA = anios.map(a => r.cuentan.filter(u => aAnio(r.I.anio(u.g)) === a).length);
+    return [r.I.nombre, r.I.comp, ...porA, { f: `SUM(C${f}:F${f})`, v: tot }, { f: `B${f}-G${f}`, v: r.I.comp - tot },
+      { f: `MIN(1,G${f}/B${f})`, v: tasa, s: 4 }, r.I.peso || "", r.I.peso ? { f: `J${f}*I${f}`, v: r.I.peso * tasa, s: 5 } : "", r.noAun.length];
+  });
+  const ult = filasG.length + 1;
+  filasG.push(["", "", "", "", "", "", "", "", "", "Puntos", { f: `SUM(K2:K${ult})`, v: D.puntos, s: 5 }, ""]);
+  const general = { nombre: "General", cabecera: ["Indicador", "Comprometido", "2026", "2027", "2028", "2029", "Total que cuenta", "Falta", "Tasa de cumplimiento", "Ponderación", "Coeficiente", "Registrados que aún no cuentan"],
+    anchos: [34, 13, 8, 8, 8, 8, 14, 9, 14, 12, 12, 20], filas: filasG };
+  const productoTxt = u => u.adjuntos.length ? u.adjuntos.map(a => (a.carpeta || CARPETA_PRODUCTOS) + "/" + a.nombre).join(" ; ") : (enlaceDe(u.g) || "pendiente de acreditar");
+  const I = id => INDICADORES.find(x => x.id === id);
+  const det = (nombre, tipo, ind, extra) => {
+    const cols = campoCols(tipo), lista = D.U.filter(u => u.g.tipo === tipo);
+    const ex = extra || [];
+    return { nombre, cabecera: ["Cuenta"].concat(ex.map(e => e[0])).concat(["Línea", "Registrado por"]).concat(cols.map(c => c[1])).concat(["Producto"]),
+      anchos: [9].concat(ex.map(() => 14)).concat([7, 26]).concat(cols.map(([id]) => ["titulo", "autores", "referencia", "descripcion"].includes(id) ? 40 : 16)).concat([40]),
+      filas: lista.map(u => [ind ? (ind.cuenta(u.g) ? "Sí" : "No") : ""].concat(ex.map(e => e[1](u.g))).concat([numL(u.linea), u.quien.join(" / ")]).concat(cols.map(([id]) => u.g[id] || "")).concat([productoTxt(u)])) };
+  };
+  const criterios = { nombre: "Cómo se cuenta", cabecera: ["Criterio"], anchos: [140], filas: [[CRITERIOS], ["Puntos: tasa de cumplimiento (lo que cuenta entre lo comprometido, como máximo 1) por la ponderación de la hoja General del Excel del grupo."], ["Generado por la app de indicadores el " + fechaLarga(D.hoy) + "."]] };
+  return crearXLSX([general,
+    det("Publicaciones", "publicacion", I("pub")),
+    det("Tesis", "tesis", I("tesis")),
+    det("Contratos", "contrato_personal", I("con")),
+    det("Proyectos", "financiacion", I("proy"), [["Cuenta como competitivo", g => I("comp").cuenta(g) ? "Sí" : "No"]]),
+    det("Congresos", "congreso", null),
+    { nombre: "Pendiente de acreditar", cabecera: ["Tipo", "Registro", "Línea", "Registrado por"], anchos: [22, 60, 8, 30], filas: D.sinProducto.map(u => [TIPOS[u.g.tipo].etiq, resumenRegistro(u.g), numL(u.linea), u.quien.join(" / ")]) },
+    criterios]);
+}
 </script>
 </body>
 </html>
